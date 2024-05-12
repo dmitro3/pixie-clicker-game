@@ -1,0 +1,39 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+body{
+  background: #333;
+}
+.App{
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.clicker{
+  width: 60vw;
+  height: 60vw;
+
+  display: block;
+  outline: none;
+  border: none;
+  border-radius: 50%;
+
+  box-shadow: 0px 0px 24px 0px #000;
+}
+/*.clicker:hover{*/
+/*  box-shadow: inset 0px 0px 24px 0px #000;*/
+/*}*/
+.score{
+  color: #f1f1f1;
+  display: block;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 32px;
+
+}
