@@ -1,23 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+@font-face {
+  font-family: "Pixel";
+  src: url("Resources/fonts/Pixel Emulator.otf") format("opentype");
+}
+
 *{
   margin: 0;
   padding: 0;
 }
 body{
-  background: #333;
+  background: #101615;
+  font-family: "Inter", sans-serif;
 }
 .App{
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
 
+  /*display: flex;*/
+  /*justify-content: space-around;*/
+  /*align-items: center;*/
+}
+.game-container{
+  padding: 12px;
+  box-sizing: border-box;
+}
+.game-container_header{
+  padding: 12px;
+  box-sizing: border-box;
+  padding-bottom: 60px;
+  background-color: #000;
+  background-image: url("Resources/images/header-background2.png");
+  background-repeat: no-repeat;
+  background-position: center 30px;
+  background-size: contain;
+}
+.game-container_header-leftSide{
   display: flex;
-  justify-content: space-around;
   align-items: center;
 }
-
+.game-container_header-leftSide > img{
+  border-radius: 50%;
+  width: 31px;
+  height: 31px;
+  margin-right: 8px;
+}
 .clicker{
-  width: 80vw;
-  height: 80vw;
+  width: 70vw;
+  height: 70vw;
 
   margin: 0 auto;
 
@@ -26,16 +57,93 @@ body{
   border: none;
   border-radius: 50%;
 
-  box-shadow: 0px 0px 24px 0px #000;
+  /*box-shadow: 0px 0px 24px 0px #000;*/
+
+  background-image: url("Resources/images/clicker-background.jpg");
+  background-position: center;
+  background-size: 102%;
 }
 /*.clicker:hover{*/
 /*  box-shadow: inset 0px 0px 24px 0px #000;*/
 /*}*/
 .score{
-  color: #f1f1f1;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  font-size: 45px;
+  justify-content: center;
+  margin-top: 16px;
+
+  font-family: "Pixel";
+}
+.score > img{
+  /*width: 33px;*/
+  /*height: 34px;*/
+  margin-top: 10px;
+  margin-right: 10px;
+}
+.game-container_stats{
+  display: flex;
+  justify-content: space-between;
+
+  box-sizing: border-box;
+  /*padding: 0 15px;*/
+}
+.game-container_stats-item{
+  background: linear-gradient(180deg, rgba(170, 167, 178, 0.09) 0%, rgba(73, 72, 76, 0.09) 100%);
+  margin-right: 10px;
+
+  padding: 3px 10px;
+
+  text-align: center;
+  color: #fff;
+
+  border-radius: 2px;
+  width: 100%;
+}
+.game-container_stats > .game-container_stats-item:last-child{
+  margin-right: 0;
+}
+.game-container_stats-item-name{
+  font-size: 12px;
   display: block;
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 32px;
+}
+.game-container_stats-item-value{
+  margin-top: 5px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-family: "Pixel";
+}
+.game-container_stats-item-value > img{
+  display: block;
+  width: 15px;
+  height: 15px;
 
+  margin-right: 4px;
+}
+.game-container_header-leftSide-name{
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 137%;
+  letter-spacing: -0.03em;
+  text-align: right;
+  color: #fff;
+}
+
+.bottom_menu{
+  position: fixed;
+  z-index: 9999;
+  bottom: 14px;
+  left: 0;
+  width: 90vw;
+  margin-left: 5vw;
+  height: 69px;
+  background-image: url("Resources/images/menu-background.png");
+  background-repeat: no-repeat;
+  background-size: contain;
 }

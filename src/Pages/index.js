@@ -1,6 +1,8 @@
 import '../App.css';
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
+import coinImage from "../Resources/images/coin.svg"
+import avatarImage from "../Resources/images/avatar.jpg"
 
 function Index() {
     let { id } = useParams();
@@ -44,7 +46,7 @@ function Index() {
     useEffect(() => {
         // Создаем WebSocket соединение при загрузке компонента
         // const ws = new WebSocket("ws://127.0.0.1:8080");
-        const ws = new WebSocket("wss://195.35.3.194:8080");
+        const ws = new WebSocket("wss://game-api.pixie.fun:8080");
 
         // Устанавливаем обработчики событий для WebSocket соединения
         ws.onopen = () => {
@@ -72,10 +74,47 @@ function Index() {
 
     return (
         <div className="App">
-            <div className="game-container">
-                <span className="score">Score: <strong>{score}</strong> (+{coinsPerClick}/sec)</span>
-                <button className="clicker" onClick={handleClick} style={isClicked ? { boxShadow: 'inset 0px 0px 15px 0px #000' } : {}}>CLICK</button>
+            <div className="game-container_header">
+                <div className="game-container_header-leftSide">
+                    <img src={avatarImage} alt=""/>
+                    <span className="game-container_header-leftSide-name">
+                            John Doe
+                        </span>
+                </div>
             </div>
+            <div className="game-container">
+                <div className="game-container_stats">
+                    <div className="game-container_stats-item">
+                        <span className="game-container_stats-item-name">Earn per tap</span>
+                        <span className="game-container_stats-item-value">
+                            <img src={coinImage} alt=""/>
+                            +{coinsPerClick}
+                        </span>
+                    </div>
+                    <div className="game-container_stats-item">
+                        <span className="game-container_stats-item-name">Coins to level up</span>
+                        <span className="game-container_stats-item-value">0</span>
+                    </div>
+                    <div className="game-container_stats-item">
+                        <span className="game-container_stats-item-name">Profit per hour</span>
+                        <span className="game-container_stats-item-value">
+                            <img src={coinImage} alt=""/>
+                            0
+                        </span>
+                    </div>
+                </div>
+                <span className="score">
+                    <img src={coinImage} alt=""/>
+                    {score}
+                </span>
+                <button className="clicker" onClick={handleClick} style={
+                    isClicked ? {boxShadow: '0px 0px 3px 20px rgba(217, 217, 217, 0.06)'} : {}
+                }></button>
+            </div>
+
+            {/*<div className="bottom_menu">*/}
+            {/*    <div className="bottom_menu-item"></div>*/}
+            {/*</div>*/}
         </div>
     );
 }
