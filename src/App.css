@@ -140,10 +140,102 @@ body{
   z-index: 9999;
   bottom: 14px;
   left: 0;
-  width: 90vw;
-  margin-left: 5vw;
+  width: 100vw;
   height: 69px;
-  background-image: url("Resources/images/menu-background.png");
+
+  display: flex;
+  justify-content: space-around;
+}
+.bottom_menu-container{
+  background-image: url("Resources/images/menu-background.svg");
   background-repeat: no-repeat;
   background-size: contain;
+  height: 69px;
+  width: 100%;
+  max-width: 365px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+.bottom_menu-item{
+  width: 25%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.leaderboard-container{
+  padding: 12px;
+  box-sizing: border-box;
+  background: #101615;
+}
+.leaderboard-list_item{
+  background: linear-gradient(180deg, rgba(170, 167, 178, 0.09) 0%, rgba(73, 72, 76, 0.09) 100%);
+  border-radius: 2px;
+  padding: 14px;
+  color: #fff;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 16px;
+}
+.leaderboard-list_item-avatar{
+  display: block;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+}
+.leaderboard-list_item-info{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding-left: 16px;
+}
+.leaderboard-list_item-rating{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  max-width: 24px;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(229, 231, 227, 0.17);
+  font-size: 16px;
+}
+.leaderboard-list_item-info-balance-coin{
+  width: 15px;
+  height: 15px;
+  display: block;
+  margin-right: 5px;
+}
+.leaderboard-list_item-info-balance{
+  display: flex;
+  align-items: center;
+  font-family: "Pixel";
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 110%;
+  text-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.25);
+  margin-top: 8px;
+}
+.leaderboard-list_item-info-name{
+  font-size: 13px;
+}
+
+@keyframes fly {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
 }

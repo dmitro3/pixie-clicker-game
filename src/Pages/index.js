@@ -3,6 +3,10 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import coinImage from "../Resources/images/coin.svg"
 import avatarImage from "../Resources/images/avatar.jpg"
+import menu_firstImage from "../Resources/images/menu/first.svg"
+import menu_secondImage from "../Resources/images/menu/second.svg"
+import menu_thirdImage from "../Resources/images/menu/third.svg"
+import menu_fourImage from "../Resources/images/menu/four.svg"
 
 function Index() {
     let { id } = useParams();
@@ -14,8 +18,22 @@ function Index() {
     const [socket, setSocket] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
+    const [clicks, setClicks] = useState([]);
+
     // Функция для обработки нажатия
-    const handleClick = () => {
+    const handleClick = (e) => {
+        const newItem = {
+            id: Date.now(),
+            x: e.clientX,
+            y: e.clientY,
+        };
+
+        setClicks(currentClicks => [...currentClicks, newItem]);
+
+        setTimeout(() => {
+            setClicks(currentClicks => currentClicks.filter(item => item.id !== newItem.id));
+        }, 1000); // Удаляем элемент через 1 секунду
+
         setIsClicked(true);
         setScore(score + coinsPerClick);
         setTimeout(() => setIsClicked(false), 100); // Убрать эффект через 100 мс
@@ -37,11 +55,11 @@ function Index() {
     useEffect(() => {
         const interval = setInterval(() => {
 
-            setScore(prevScore => prevScore + coinsPerClick);
+            setScore(prevScore => prevScore + coinsPerSecond);
         }, 1000);
 
         return () => clearInterval(interval); // Очищаем интервал при размонтировании компонента
-    }, [coinsPerClick]);
+    }, [coinsPerSecond]);
 
     useEffect(() => {
         // Создаем WebSocket соединение при загрузке компонента
@@ -110,11 +128,42 @@ function Index() {
                 <button className="clicker" onClick={handleClick} style={
                     isClicked ? {boxShadow: '0px 0px 3px 20px rgba(217, 217, 217, 0.06)'} : {}
                 }></button>
+                {clicks.map(({ id, x, y }) => (
+                    <div
+                        key={id}
+                        style={{
+                            position: 'fixed',
+                            left: x,
+                            top: y,
+                            opacity: 1,
+                            animation: 'fly 1s forwards',
+                            pointerEvents: 'none',
+                            color:'#fff',
+                            fontFamily: 'Pixel',
+                            fontSize: '20px'
+                        }}
+                    >
+                        {coinsPerClick}
+                    </div>
+                ))}
             </div>
 
-            {/*<div className="bottom_menu">*/}
-            {/*    <div className="bottom_menu-item"></div>*/}
-            {/*</div>*/}
+            <div className="bottom_menu">
+                <div className="bottom_menu-container">
+                    <div className="bottom_menu-item">
+                        <img src={menu_firstImage} alt=""/>
+                    </div>
+                    <div className="bottom_menu-item">
+                        <img src={menu_secondImage} alt=""/>
+                    </div>
+                    <div className="bottom_menu-item">
+                        <img src={menu_thirdImage} alt=""/>
+                    </div>
+                    <div className="bottom_menu-item">
+                        <img src={menu_fourImage} alt=""/>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
