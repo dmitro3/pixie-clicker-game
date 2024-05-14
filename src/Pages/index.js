@@ -21,11 +21,13 @@ function Index() {
     const [clicks, setClicks] = useState([]);
 
     // Функция для обработки нажатия
-    const handleClick = (e) => {
+    const handleClick = (event) => {
+        const touch = event.changedTouches[0];
+        
         const newItem = {
             id: Date.now(),
-            x: e.clientX,
-            y: e.clientY,
+            x: touch.clientX,
+            y: touch.clientY,
         };
 
         setClicks(currentClicks => [...currentClicks, newItem]);
@@ -125,9 +127,9 @@ function Index() {
                     <img src={coinImage} alt=""/>
                     {score}
                 </span>
-                <button className="clicker" onClick={handleClick} style={
+                <div className="clicker" onTouchEnd={handleClick} style={
                     isClicked ? {boxShadow: '0px 0px 3px 20px rgba(217, 217, 217, 0.06)'} : {}
-                }></button>
+                }></div>
                 {clicks.map(({ id, x, y }) => (
                     <div
                         key={id}
