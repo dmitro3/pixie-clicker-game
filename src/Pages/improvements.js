@@ -12,7 +12,7 @@ function Improvements() {
     const [improvements, setImprovements] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
-    let id = sessionStorage.telegram_user_id;
+    let telegramUserId = sessionStorage.telegram_user_id;
 
     useEffect(() => {
         fetch(`https://game-api.pixie.fun/api/clicker/improvements/get`)
@@ -66,12 +66,17 @@ function Improvements() {
         console.log(playerImprovements)
         console.log(id)
 
-        fetch(`https://game-api.pixie.fun/api/clicker/improvements/set/${telegram_user_id}`, {
+        let bodyData = {
+            "improvements":playerImprovements,
+            "coins_per_second":coinsPerSecond
+        }
+
+        fetch(`https://game-api.pixie.fun/api/clicker/improvements/set/${telegramUserId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(playerImprovements)
+            body: JSON.stringify(bodyData)
         }).then(response => response.json())
             .then(response => {
                 console.log(response);

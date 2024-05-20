@@ -6,11 +6,19 @@ import GameContext from "./Context/GameContext";
 import avatarImage from "./Resources/images/avatar.jpg";
 
 const Layout = () => {
-    let id = sessionStorage.telegram_user_id;
+    // let { id } = useParams();
+    // sessionStorage.setItem("telegram_user_id", id);
+    // console.log(id)
+
+    let { id } = useParams()
+    if(!id){
+        let id = sessionStorage.telegram_user_id;
+    }
+
     // let { id } = useParams();
     // let session_id = sessionStorage.id
 
-    const { score, coinsPerClick, coinsPerSecond, playerImprovements, updateGame } = useContext(GameContext);
+    const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, maxEnergy, updateGame } = useContext(GameContext);
     const [socket, setSocket] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
@@ -24,7 +32,9 @@ const Layout = () => {
                     score:parseFloat(response.user.balance),
                     coinsPerClick:parseFloat(response.user.coins_per_click),
                     coinsPerSecond:parseFloat(response.user.coins_per_second),
-                    playerImprovements:JSON.parse(response.user.improvements_data)
+                    playerImprovements:JSON.parse(response.user.improvements_data),
+                    energy:response.user.current_energy,
+                    maxEnergy:response.user.max_energy
                 })
 
                 setLoaded(true);
@@ -36,6 +46,7 @@ const Layout = () => {
             updateGame(prev => ({
                 ...prev,
                 score: prev.score + prev.coinsPerSecond,
+                energy: prev.energy >= prev.maxEnergy ? prev.energy = prev.maxEnergy : prev.energy + 1
             }));
         }, 1000);
 
@@ -67,7 +78,7 @@ const Layout = () => {
         // console.log("score is: " + score)
 
         if (socket && score != 0) {
-            socket.send(JSON.stringify({ "Score":score, "TelegramId":parseInt(id) }));
+            socket.send(JSON.stringify({ "Score":score, "TelegramId":parseInt(id), "Energy": energy}));
         }
     }, [score, socket]);
 

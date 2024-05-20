@@ -447,9 +447,52 @@ body{
   background: #111414;
   color: #666;
 }
+.energy_container{
+  display: flex;
+  align-items: center;
+  font-family: "Pixel";
+  color: #fff;
 
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 157%;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.energy_container > img{
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin-right: 2px;
+}
+.boost_button{
+  font-family: "Pixel";
 
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 157%;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #fff;
 
+  display: flex;
+  align-items: center;
+}
+.boost_button > img{
+  width: 24px;
+  height: 24px;
+  display: block;
+  margin-right: 2px;
+}
+.energy_and_boost{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  margin-top: 20px;
+}
 
 
 

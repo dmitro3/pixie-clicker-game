@@ -8,7 +8,9 @@ const GameProvider = ({ children }) => {
         score: 0,
         coinsPerClick: 0,
         coinsPerSecond: 0,
-        playerImprovements:{}
+        playerImprovements:{},
+        energy:0,
+        maxEnergy:0
     });
 
     // Функция для обновления состояния
