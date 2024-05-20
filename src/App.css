@@ -31,12 +31,12 @@ body{
 .game-container_header{
   padding: 12px;
   box-sizing: border-box;
-  padding-bottom: 60px;
+  padding-bottom: 10px;
   background-color: #000;
   background-image: url("Resources/images/header-background2.png");
   background-repeat: no-repeat;
-  background-position: center 30px;
-  background-size: contain;
+  background-position: center -5px;
+  background-size: cover;
 }
 .game-container_header-leftSide{
   display: flex;
@@ -64,6 +64,9 @@ body{
   background-image: url("Resources/images/clicker-background.jpg");
   background-position: center;
   background-size: 102%;
+}
+.clicker.disabled{
+  opacity: 0.4;
 }
 /*.clicker:hover{*/
 /*  box-shadow: inset 0px 0px 24px 0px #000;*/

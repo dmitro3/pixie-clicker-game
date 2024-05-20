@@ -63,7 +63,7 @@ function Referrals() {
                                                 </span>
                                                 <span className="referrals_container-list-items-item-info-coins">
                                                 <img src={coinImage} alt="" className="referrals_container-list-items-item-info-coins-image"/>
-                                                +{referral.balance || 0}
+                                                +{parseInt(referral.balance) || 0}
                                             </span>
                                             </div>
                                         </div>

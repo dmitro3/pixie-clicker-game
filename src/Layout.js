@@ -20,6 +20,9 @@ const Layout = () => {
 
     const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, maxEnergy, updateGame } = useContext(GameContext);
     const [socket, setSocket] = useState(null);
+    const [firstName, setFirstName] = useState(null);
+    const [lastName, setLastName] = useState(null);
+    const [username, setUsername] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
@@ -28,6 +31,11 @@ const Layout = () => {
             .then(response => {
                 console.log(response.user);
                 console.log(JSON.parse(response.user.improvements_data))
+
+                setFirstName(response.user.first_name);
+                setLastName(response.user.last_name);
+                setUsername(response.user.username);
+
                 updateGame({
                     score:parseFloat(response.user.balance),
                     coinsPerClick:parseFloat(response.user.coins_per_click),
@@ -83,7 +91,7 @@ const Layout = () => {
     }, [score, socket]);
 
     function parseBigNumber(number){
-        if(number >= 1000 && number < 1000000){
+        if(number >= 10000 && number < 1000000){
             return `${parseInt(number / 1000)}k`
         }else if(number >= 1000000){
             return `${parseInt(number / 1000000)}kk`
@@ -100,7 +108,7 @@ const Layout = () => {
                 <div className="game-container_header-leftSide">
                     <img src={avatarImage} alt=""/>
                     <span className="game-container_header-leftSide-name">
-                        John Doe
+                        {firstName ? (firstName) + ' ' + (lastName || '') : username}
                     </span>
                 </div>
             </div>

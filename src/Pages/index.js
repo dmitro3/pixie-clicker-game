@@ -25,6 +25,10 @@ function Index() {
 
     // Функция для обработки нажатия
     const handleClick = (event) => {
+        if(energy < coinsPerClick){
+            return;
+        }
+        
         const touch = event.changedTouches[0];
         
         const newItem = {
@@ -32,8 +36,6 @@ function Index() {
             x: touch.clientX,
             y: touch.clientY,
         };
-
-        // console.log("click")
 
         setClicks(currentClicks => [...currentClicks, newItem]);
 
@@ -53,7 +55,7 @@ function Index() {
     return (
         <div className="App">
             <div>
-                <div className="clicker" onTouchEnd={handleClick} style={
+                <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={
                     isClicked ? {boxShadow: '0px 0px 3px 20px rgba(217, 217, 217, 0.06)'} : {}
                 }></div>
                 {clicks.map(({ id, x, y }) => (
