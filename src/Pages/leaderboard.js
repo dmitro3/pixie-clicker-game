@@ -31,7 +31,7 @@ function Leaderboard() {
                                 <span className="leaderboard-list_item-info-name">{user.first_name ? user.first_name + " " + (user.last_name === 'None' ? '' : user.last_name) : user.username || 'Hidden username'}</span>
                                 <span className="leaderboard-list_item-info-balance">
                                 <img src={coinImage} alt="coin" className="leaderboard-list_item-info-balance-coin"/>
-                                    {parseInt(user.balance)}
+                                    {parseInt(user.total_earn)}
                             </span>
                             </div>
                             <div className="leaderboard-list_item-rating">

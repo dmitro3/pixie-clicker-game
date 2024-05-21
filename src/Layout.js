@@ -18,7 +18,7 @@ const Layout = () => {
     // let { id } = useParams();
     // let session_id = sessionStorage.id
 
-    const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, maxEnergy, updateGame } = useContext(GameContext);
+    const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, totalEarn, maxEnergy, updateGame } = useContext(GameContext);
     const [socket, setSocket] = useState(null);
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
@@ -36,13 +36,37 @@ const Layout = () => {
                 setLastName(response.user.last_name);
                 setUsername(response.user.username);
 
+                let last_online_at = (response.user.last_online_at).replace(/ /, 'T').replace(/ /, ':') + 'Z';
+
+                let dateNowObj = new Date(response.user.date_now);
+                let lastOnlineAtObj = new Date(last_online_at);
+                let difference = dateNowObj - lastOnlineAtObj;
+                let differenceInSeconds = Math.round(difference / 1000);
+                let differenceInMinutes = parseInt(differenceInSeconds / 60);
+
+                let score = parseFloat(response.user.balance);
+                let energy = parseInt(response.user.current_energy);
+
+                if(differenceInMinutes > 1){
+                    if(differenceInSeconds > (60 * 60 * 3)) {
+                        differenceInSeconds = 60 * 60 * 3;
+                    }
+
+                    score = score + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
+                    energy = energy + parseInt(differenceInSeconds * 1);
+                    if(energy > parseInt(response.user.max_energy)){
+                        energy = parseInt(response.user.max_energy);
+                    }
+                }
+
                 updateGame({
-                    score:parseFloat(response.user.balance),
+                    score:score,
                     coinsPerClick:parseFloat(response.user.coins_per_click),
                     coinsPerSecond:parseFloat(response.user.coins_per_second),
                     playerImprovements:JSON.parse(response.user.improvements_data),
-                    energy:response.user.current_energy,
-                    maxEnergy:response.user.max_energy
+                    energy:parseInt(energy),
+                    maxEnergy:parseInt(response.user.max_energy),
+                    totalEarn:parseFloat(response.user.total_earn)
                 })
 
                 setLoaded(true);
@@ -54,7 +78,8 @@ const Layout = () => {
             updateGame(prev => ({
                 ...prev,
                 score: prev.score + prev.coinsPerSecond,
-                energy: prev.energy >= prev.maxEnergy ? prev.energy = prev.maxEnergy : prev.energy + 1
+                energy: prev.energy >= prev.maxEnergy ? prev.energy = prev.maxEnergy : prev.energy + 1,
+                totalEarn: prev.totalEarn + prev.coinsPerSecond
             }));
         }, 1000);
 
@@ -86,7 +111,12 @@ const Layout = () => {
         // console.log("score is: " + score)
 
         if (socket && score != 0) {
-            socket.send(JSON.stringify({ "Score":score, "TelegramId":parseInt(id), "Energy": energy}));
+            socket.send(JSON.stringify({
+                "Score":parseFloat(score),
+                "TelegramId":parseInt(id),
+                "Energy": parseInt(energy),
+                "TotalEarn":parseFloat(totalEarn)
+            }));
         }
     }, [score, socket]);
 

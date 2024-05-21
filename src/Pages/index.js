@@ -15,7 +15,7 @@ function Index() {
     let { id } = useParams();
     sessionStorage.setItem("telegram_user_id", id);
 
-    const { score, coinsPerClick, coinsPerSecond, energy, maxEnergy, updateGame } = useContext(GameContext);
+    const { score, coinsPerClick, coinsPerSecond, energy, totalEarn, maxEnergy, updateGame } = useContext(GameContext);
 
     const [isClicked, setIsClicked] = useState(false);
     const [loaded, setLoaded] = useState(false);
@@ -45,7 +45,11 @@ function Index() {
 
         setIsClicked(true);
         // setScore(score + coinsPerClick);
-        updateGame({ score: score + coinsPerClick, energy: energy - coinsPerClick});
+        updateGame({
+            score: score + coinsPerClick,
+            energy: energy - coinsPerClick,
+            totalEarn: totalEarn + coinsPerClick
+        });
 
         setTimeout(() => setIsClicked(false), 100); // Убрать эффект через 100 мс
     };
