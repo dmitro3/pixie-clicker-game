@@ -36,28 +36,31 @@ const Layout = () => {
                 setLastName(response.user.last_name);
                 setUsername(response.user.username);
 
-                let last_online_at = (response.user.last_online_at).replace(/ /, 'T').replace(/ /, ':') + 'Z';
+                if(response.user.last_online_at){
+                    let last_online_at = (response.user.last_online_at).replace(/ /, 'T').replace(/ /, ':') + 'Z';
 
-                let dateNowObj = new Date(response.user.date_now);
-                let lastOnlineAtObj = new Date(last_online_at);
-                let difference = dateNowObj - lastOnlineAtObj;
-                let differenceInSeconds = Math.round(difference / 1000);
-                let differenceInMinutes = parseInt(differenceInSeconds / 60);
+                    let dateNowObj = new Date(response.user.date_now);
+                    let lastOnlineAtObj = new Date(last_online_at);
+                    let difference = dateNowObj - lastOnlineAtObj;
+                    let differenceInSeconds = Math.round(difference / 1000);
+                    let differenceInMinutes = parseInt(differenceInSeconds / 60);
 
-                let score = parseFloat(response.user.balance);
-                let energy = parseInt(response.user.current_energy);
+                    let score = parseFloat(response.user.balance);
+                    let energy = parseInt(response.user.current_energy);
 
-                if(differenceInMinutes > 1){
-                    if(differenceInSeconds > (60 * 60 * 3)) {
-                        differenceInSeconds = 60 * 60 * 3;
-                    }
+                    if(differenceInMinutes > 1){
+                        if(differenceInSeconds > (60 * 60 * 3)) {
+                            differenceInSeconds = 60 * 60 * 3;
+                        }
 
-                    score = score + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
-                    energy = energy + parseInt(differenceInSeconds * 1);
-                    if(energy > parseInt(response.user.max_energy)){
-                        energy = parseInt(response.user.max_energy);
+                        score = score + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
+                        energy = energy + parseInt(differenceInSeconds * 1);
+                        if(energy > parseInt(response.user.max_energy)){
+                            energy = parseInt(response.user.max_energy);
+                        }
                     }
                 }
+
 
                 updateGame({
                     score:score,
@@ -110,7 +113,7 @@ const Layout = () => {
     useEffect(() => {
         // console.log("score is: " + score)
 
-        if (socket && score != 0) {
+        if (socket && score != 0 && parseInt(totalEarn) != 0) {
             socket.send(JSON.stringify({
                 "Score":parseFloat(score),
                 "TelegramId":parseInt(id),

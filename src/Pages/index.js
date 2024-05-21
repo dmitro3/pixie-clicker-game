@@ -25,8 +25,12 @@ function Index() {
 
     // Функция для обработки нажатия
     const handleClick = (event) => {
+        let coinsPerClickNow = coinsPerClick;
+        let isMinusEnergy = true;
+
         if(energy < coinsPerClick){
-            return;
+            coinsPerClickNow = 1;
+            isMinusEnergy = false;
         }
         
         const touch = event.changedTouches[0];
@@ -35,6 +39,7 @@ function Index() {
             id: Date.now(),
             x: touch.clientX,
             y: touch.clientY,
+            coinsPerClickNow:coinsPerClickNow
         };
 
         setClicks(currentClicks => [...currentClicks, newItem]);
@@ -46,9 +51,9 @@ function Index() {
         setIsClicked(true);
         // setScore(score + coinsPerClick);
         updateGame({
-            score: score + coinsPerClick,
-            energy: energy - coinsPerClick,
-            totalEarn: totalEarn + coinsPerClick
+            score: score + coinsPerClickNow,
+            energy: energy - (isMinusEnergy ? coinsPerClick : 0),
+            totalEarn: totalEarn + coinsPerClickNow
         });
 
         setTimeout(() => setIsClicked(false), 100); // Убрать эффект через 100 мс
@@ -59,10 +64,11 @@ function Index() {
     return (
         <div className="App">
             <div>
-                <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={
+                {/*<div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={*/}
+                <div className={"clicker"} onTouchEnd={handleClick} style={
                     isClicked ? {boxShadow: '0px 0px 3px 20px rgba(217, 217, 217, 0.06)'} : {}
                 }></div>
-                {clicks.map(({ id, x, y }) => (
+                {clicks.map(({ id, x, y, coinsPerClickNow }) => (
                     <div
                         key={id}
                         style={{
@@ -77,7 +83,7 @@ function Index() {
                             fontSize: '20px'
                         }}
                     >
-                        {coinsPerClick}
+                        {coinsPerClickNow}
                     </div>
                 ))}
 
