@@ -4,6 +4,7 @@ import BottomMenu from './Components/BottomMenu';
 import coinImage from "./Resources/images/coin.svg";
 import GameContext from "./Context/GameContext";
 import avatarImage from "./Resources/images/avatar.jpg";
+import WebApp from "@twa-dev/sdk";
 
 const Layout = () => {
     // let { id } = useParams();
@@ -17,6 +18,13 @@ const Layout = () => {
 
     // let { id } = useParams();
     // let session_id = sessionStorage.id
+
+    useEffect(() => {
+        // Инициализация SDK
+        WebApp.ready();
+        // Вызов метода expand
+        WebApp.expand();
+    }, []);
 
     const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, totalEarn, maxEnergy, updateGame } = useContext(GameContext);
     const [socket, setSocket] = useState(null);
