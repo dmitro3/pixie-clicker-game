@@ -5,13 +5,13 @@ const GameProvider = ({ children }) => {
     // console.log("Game provider loaded");
 
     const [gameState, setGameState] = useState({
-        score: 0,
-        coinsPerClick: 0,
-        coinsPerSecond: 0,
+        score: null,
+        coinsPerClick: null,
+        coinsPerSecond: null,
         playerImprovements:{},
-        energy:0,
-        maxEnergy:0,
-        totalEarn:0
+        energy:null,
+        maxEnergy:null,
+        totalEarn:null
     });
 
     // Функция для обновления состояния
