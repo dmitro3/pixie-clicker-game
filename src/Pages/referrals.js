@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom";
 import avatarImage from "../Resources/images/avatar.jpg"
 import coinImage from "../Resources/images/coin.svg"
 import horizontalLine from "../Resources/images/horizontal_line.svg"
+import Loader from "../Components/Loader";
 
 function Referrals() {
     let id = sessionStorage.telegram_user_id;
@@ -40,7 +41,7 @@ function Referrals() {
             });
     }, []);
 
-    if(!isLoaded) return <>Загрузка...</>;
+    if(!isLoaded) return <Loader />;
 
     return (
         <div className="App">

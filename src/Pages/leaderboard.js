@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import avatarImage from "../Resources/images/avatar.jpg"
 import coinImage from "../Resources/images/coin.svg"
+import Loader from "../Components/Loader";
 
 function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState(null);
@@ -17,7 +18,7 @@ function Leaderboard() {
             });
     }, []);
 
-    if(!isLoaded) return <>Загрузка...</>;
+    if(!isLoaded) return <Loader />;
 
     return (
         <div className="App">

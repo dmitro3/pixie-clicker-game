@@ -5,6 +5,7 @@ import avatarImage from "../Resources/images/avatar.jpg"
 import coinImage from "../Resources/images/coin.svg"
 import rocketImage from "../Resources/images/rocket.svg"
 import GameContext from "../Context/GameContext";
+import Loader from "../Components/Loader";
 
 function Improvements() {
     const { score, coinsPerClick, coinsPerSecond, playerImprovements, updateGame } = useContext(GameContext);
@@ -49,11 +50,14 @@ function Improvements() {
                     playerNewImprovements['data'][item.id] = {"level":2};
                 }
 
-                updateGame({
-                    playerImprovements: playerNewImprovements,
-                    coinsPerSecond: coinsPerSecond + (parseFloat(improvements[i]['give_coins'] / 60 / 60)),
-                    score: parseFloat(score) - parseFloat(improvements[i]['price'])
-                });
+                updateGame(prev => ({
+                    ...prev,
+                    score: parseFloat(prev.score) - parseFloat(improvements[i]['price']),
+                    coinsPerSecond: prev.coinsPerSecond + (parseFloat(improvements[i]['give_coins'] / 60 / 60)),
+                    playerImprovements: playerNewImprovements
+                }));
+
+                console.log("Сработал updateGame | score is " + score)
 
                 console.log("coinsPerSecond is: " + coinsPerSecond)
 
@@ -83,7 +87,7 @@ function Improvements() {
             })
     }
 
-    if(!isLoaded) return <>Загрузка...</>;
+    if(!isLoaded) return <Loader />;
 
     return (
         <div className="App">

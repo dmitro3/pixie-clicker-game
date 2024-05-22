@@ -5,6 +5,7 @@ import coinImage from "./Resources/images/coin.svg";
 import GameContext from "./Context/GameContext";
 import avatarImage from "./Resources/images/avatar.jpg";
 import WebApp from "@twa-dev/sdk";
+import Loader from "./Components/Loader";
 
 const Layout = () => {
     // let { id } = useParams();
@@ -44,7 +45,7 @@ const Layout = () => {
                 setLastName(response.user.last_name);
                 setUsername(response.user.username);
 
-                let score = parseFloat(response.user.balance);
+                let user_score = parseFloat(response.user.balance);
                 let energy = parseInt(response.user.current_energy);
 
                 if(response.user.last_online_at){
@@ -61,7 +62,7 @@ const Layout = () => {
                             differenceInSeconds = 60 * 60 * 3;
                         }
 
-                        score = score + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
+                        user_score = user_score + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
                         energy = energy + parseInt(differenceInSeconds * 1);
                         if(energy > parseInt(response.user.max_energy)){
                             energy = parseInt(response.user.max_energy);
@@ -71,7 +72,7 @@ const Layout = () => {
 
 
                 updateGame({
-                    score:score,
+                    score:user_score,
                     coinsPerClick:parseFloat(response.user.coins_per_click),
                     coinsPerSecond:parseFloat(response.user.coins_per_second),
                     playerImprovements:JSON.parse(response.user.improvements_data),
@@ -119,29 +120,33 @@ const Layout = () => {
     }, [loaded]);
 
     useEffect(() => {
-        // console.log("score is: " + score)
+        console.log("score is: " + score)
 
         if (socket && score !== null && totalEarn !== null) {
-            socket.send(JSON.stringify({
+            let socket_data = JSON.stringify({
                 "Score":parseFloat(score),
                 "TelegramId":parseInt(id),
                 "Energy": parseInt(energy),
                 "TotalEarn":parseFloat(totalEarn)
-            }));
+            });
+
+            socket.send(socket_data);
+            console.log("Отправили пакет на сервер")
+            console.log(socket_data)
         }
     }, [score, socket]);
 
-    function parseBigNumber(number){
-        if(number >= 10000 && number < 1000000){
+    function parseBigNumber(number) {
+        if (number >= 10000 && number < 1000000) {
             return `${parseInt(number / 1000)}k`
-        }else if(number >= 1000000){
+        } else if (number >= 1000000) {
             return `${parseInt(number / 1000000)}kk`
-        }else{
+        } else {
             return `${parseInt(number)}`
         }
     }
 
-    if(!loaded && !playerImprovements && score === null) return <>Loading...</>;
+    if(!loaded || !playerImprovements || isNaN(score)) return <Loader/>;
 
     return (
         <div className="app">
