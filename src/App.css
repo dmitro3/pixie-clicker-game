@@ -496,14 +496,23 @@ body{
   padding: 0 20px;
   margin-top: 20px;
 }
-
-
-
-
-
-
-
-
+.just-webapp{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.just-webapp-text{
+  color: #fff;
+}
+.just-webapp-link{
+  color: #f1f1f1;
+  margin-top: 20px;
+  font-size: 20px;
+}
 @keyframes fly {
   0% {
     transform: translateY(0);

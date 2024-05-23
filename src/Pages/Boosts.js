@@ -8,10 +8,10 @@ import GameContext from "../Context/GameContext";
 import WebSocketContext from "../Context/WebSocketContext";
 import Loader from "../Components/Loader";
 
-function Improvements() {
+function Boosts() {
     const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
-    const [improvements, setImprovements] = useState(null);
+    const [clickBoostPrice, setClickBoostPrice] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
     const telegram = window.Telegram.WebApp;
@@ -22,26 +22,8 @@ function Improvements() {
     }
 
     useEffect(() => {
-        fetch(`https://game-api.pixie.fun/api/clicker/improvements/get`)
-            .then(response => response.json())
-            .then(response => {
-                let improvements = response.improvements;
-                improvements.forEach((item, i) => {
-                    if (playerImprovements['data'][item.id]) {
-                        for (let level_iteration = 2; level_iteration <= playerImprovements['data'][item.id]['level']; level_iteration++) {
-                            improvements[i]['coins_mining_now'] = (improvements[i]['coins_mining_now'] || 0) + improvements[i]['give_coins'];
+        setClickBoostPrice(coinsPerClick * 1000);
 
-                            improvements[i]['price'] = improvements[i]['price'] * improvements[i]['price_coef'];
-                            improvements[i]['give_coins'] = improvements[i]['give_coins'] * improvements[i]['give_coins_coef'];
-                        }
-                    }
-                });
-
-                setImprovements(improvements);
-                setIsLoaded(true);
-
-                console.log(playerImprovements);
-            });
     }, []);
 
     function buyImprovement(id) {
@@ -109,7 +91,7 @@ function Improvements() {
     return (
         <div className="App">
             <div className="improve_container">
-                <h1 className="improve_container-name">Майнинг</h1>
+                <h1 className="improve_container-name">Бусты</h1>
 
                 <div className="improve_container-row">
                     {improvements.map(item => (
@@ -148,4 +130,4 @@ function Improvements() {
     );
 }
 
-export default Improvements;
+export default Boosts;
