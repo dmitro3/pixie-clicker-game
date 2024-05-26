@@ -5,15 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GameProvider from "./Providers/GameProvider";
 import { WebSocketProvider } from "./Context/WebSocketContext";
+import {I18nextProvider} from "react-i18next";
+import i18n from './i18n';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <GameProvider>
-          <WebSocketProvider>
-              <App />
-          </WebSocketProvider>
-      </GameProvider>
+      <I18nextProvider i18n={i18n}>
+          <GameProvider>
+              <WebSocketProvider>
+                  <App />
+              </WebSocketProvider>
+          </GameProvider>
+      </I18nextProvider>
+
   </React.StrictMode>
 );
 

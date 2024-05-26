@@ -5,32 +5,24 @@ import BottomMenu from './Components/BottomMenu';
 import coinImage from "./Resources/images/coin.svg";
 import GameContext from "./Context/GameContext";
 import avatarImage from "./Resources/images/avatar.jpg";
-import WebApp from "@twa-dev/sdk";
+import WebAppUser from "@twa-dev/sdk";
 import Loader from "./Components/Loader";
+import {useTranslation} from "react-i18next";
 
 const Layout = () => {
-    let { id } = useParams();
-
-    const telegram = window.Telegram.WebApp;
-    if(telegram){
-        id = telegram.user.id;
-        console.log("Telegram user ID взяли в telegram object! " + id)
-    }
-
-    useEffect(() => {
-        WebApp.ready();
-        WebApp.expand();
-    }, []);
-
-    const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, totalEarn, maxEnergy, updateGame } = useContext(GameContext);
+    const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, totalEarn, maxEnergy, updateGame, userId } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
     const [username, setUsername] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
+    const { t, i18n } = useTranslation();
+
     useEffect(() => {
-        fetch(`https://game-api.pixie.fun/api/clicker/user/get/${id}`)
+        if(!userId){return;}
+
+        fetch(`https://game-api.pixie.fun/api/clicker/user/get/${userId}`)
             .then(response => response.json())
             .then(response => {
                 setFirstName(response.user.first_name);
@@ -39,6 +31,7 @@ const Layout = () => {
 
                 let user_score = parseFloat(response.user.balance);
                 let energy = parseInt(response.user.current_energy);
+                let total_earn = parseInt(response.user.total_earn);
 
                 if (response.user.last_online_at) {
                     let last_online_at = (response.user.last_online_at).replace(/ /, 'T').replace(/ /, ':') + 'Z';
@@ -55,6 +48,7 @@ const Layout = () => {
                         }
 
                         user_score = user_score + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
+                        total_earn = total_earn + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
                         energy = energy + parseInt(differenceInSeconds * 1);
                         if (energy > parseInt(response.user.max_energy)) {
                             energy = parseInt(response.user.max_energy);
@@ -62,6 +56,7 @@ const Layout = () => {
                     }
                 }
 
+                console.warn(JSON.parse(response.user.improvements_data))
                 updateGame({
                     score: user_score,
                     coinsPerClick: parseFloat(response.user.coins_per_click),
@@ -69,7 +64,7 @@ const Layout = () => {
                     playerImprovements: JSON.parse(response.user.improvements_data),
                     energy: parseInt(energy),
                     maxEnergy: parseInt(response.user.max_energy),
-                    totalEarn: parseFloat(response.user.total_earn)
+                    totalEarn: parseInt(total_earn)
                 });
 
                 setLoaded(true);
@@ -90,19 +85,17 @@ const Layout = () => {
     }, [coinsPerSecond]);
 
     useEffect(() => {
-        if (socket && score !== null && totalEarn !== null) {
+        if (socket && !isNaN(score) && score !== null && totalEarn !== null && !isNaN(totalEarn)) {
             const socket_data = JSON.stringify({
                 "Score": parseFloat(score),
-                "TelegramId": parseInt(id),
+                "TelegramId": parseInt(userId),
                 "Energy": parseInt(energy),
                 "TotalEarn": parseFloat(totalEarn)
             });
 
             socket.send(socket_data);
-            console.log("Отправили пакет на сервер");
-            console.log(socket_data);
         }
-    }, [score, socket, id, energy, totalEarn]);
+    }, [score, socket, userId, energy, totalEarn]);
 
     function parseBigNumber(number) {
         if (number >= 10000 && number < 1000000) {
@@ -129,18 +122,18 @@ const Layout = () => {
             <div className="game-container">
                 <div className="game-container_stats">
                     <div className="game-container_stats-item">
-                        <span className="game-container_stats-item-name">Earn per tap</span>
+                        <span className="game-container_stats-item-name">{t('Earn per tap')}</span>
                         <span className="game-container_stats-item-value">
                             <img src={coinImage} alt="" />
                             +{coinsPerClick}
                         </span>
                     </div>
                     <div className="game-container_stats-item">
-                        <span className="game-container_stats-item-name">Coins to level up</span>
+                        <span className="game-container_stats-item-name">{t('Coins to level up')}</span>
                         <span className="game-container_stats-item-value">0</span>
                     </div>
                     <div className="game-container_stats-item">
-                        <span className="game-container_stats-item-name">Profit per hour</span>
+                        <span className="game-container_stats-item-name">{t('Profit per hour')}</span>
                         <span className="game-container_stats-item-value">
                             <img src={coinImage} alt="" />
                             {parseBigNumber(coinsPerSecond * 60 * 60)}

@@ -1,8 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import GameContext from '../Context/GameContext';
+import WebAppUser from "@twa-dev/sdk";
+
 
 const GameProvider = ({ children }) => {
     // console.log("Game provider loaded");
+
+    const isRunningInTelegram = () => {
+        return typeof WebAppUser.plaftorm === 'undefined' ? false : true;
+    };
+
+    // Function to check if the app is running on localhost
+    const isLocalhost = () => {
+        return window.location.hostname === 'localhost' && window.location.port === '3000';
+    };
 
     const [gameState, setGameState] = useState({
         score: null,
@@ -11,8 +22,17 @@ const GameProvider = ({ children }) => {
         playerImprovements:{},
         energy:null,
         maxEnergy:null,
-        totalEarn:null
+        totalEarn:null,
+        userId: (!isRunningInTelegram() && isLocalhost()) ? 875591451 : WebAppUser.initDataUnsafe.user.id
     });
+
+    useEffect(() => {
+        console.log("=========================")
+        console.log(isRunningInTelegram())
+        console.log(isLocalhost())
+        console.log(isLocalhost())
+        console.log("=========================")
+    }, []);
 
     // Функция для обновления состояния
     // const updateGame = (updates) => {

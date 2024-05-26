@@ -7,25 +7,25 @@ import rocketImage from "../Resources/images/rocket.svg";
 import GameContext from "../Context/GameContext";
 import WebSocketContext from "../Context/WebSocketContext";
 import Loader from "../Components/Loader";
+import WebAppUser from "@twa-dev/sdk";
+import {useTranslation} from "react-i18next";
 
 function Improvements() {
-    const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame } = useContext(GameContext);
+    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
     const [improvements, setImprovements] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
-    const telegram = window.Telegram.WebApp;
-    let telegramUserId = null;
-    if(telegram){
-        telegramUserId = telegram.user.id;
-        console.log("Telegram user ID взяли в telegram object! " + telegramUserId)
-    }
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
+        console.warn(playerImprovements);
+
         fetch(`https://game-api.pixie.fun/api/clicker/improvements/get`)
             .then(response => response.json())
             .then(response => {
                 let improvements = response.improvements;
+
                 improvements.forEach((item, i) => {
                     if (playerImprovements['data'][item.id]) {
                         for (let level_iteration = 2; level_iteration <= playerImprovements['data'][item.id]['level']; level_iteration++) {
@@ -38,16 +38,21 @@ function Improvements() {
                 });
 
                 setImprovements(improvements);
+                console.log(improvements)
                 setIsLoaded(true);
 
-                console.log(playerImprovements);
+                console.warn(playerImprovements);
             });
     }, []);
 
     function buyImprovement(id) {
+        console.warn(playerImprovements);
+
+
         improvements.forEach((item, i) => {
             if (item['id'] === id) {
                 let playerNewImprovements = playerImprovements;
+
                 if (playerNewImprovements['data'][item.id]) {
                     playerNewImprovements['data'][item.id]['level'] += 1;
                 } else {
@@ -55,13 +60,10 @@ function Improvements() {
                 }
 
                 updateGame({
-                    score: parseFloat(score) - parseFloat(improvements[i]['price']),
-                    coinsPerSecond: coinsPerSecond + (parseFloat(improvements[i]['give_coins'] / 60 / 60)),
+                    score: parseFloat(score) - parseFloat(item['price']),
+                    coinsPerSecond: coinsPerSecond + (parseFloat(item['give_coins'] / 60 / 60)),
                     playerImprovements: playerNewImprovements
                 });
-
-                console.log("Сработал updateGame | score is " + score);
-                console.log("coinsPerSecond is: " + coinsPerSecond);
 
                 improvements[i]['price'] = improvements[i]['price'] * improvements[i]['price_coef'];
                 improvements[i]['give_coins'] = improvements[i]['give_coins'] * improvements[i]['give_coins_coef'];
@@ -69,15 +71,28 @@ function Improvements() {
             }
         });
 
-        console.log(playerImprovements);
-        console.log(id);
+        console.warn(playerImprovements);
+    }
+
+    useEffect(() => {
+        if(coinsPerSecond === 0){
+            return;
+        }
+
+        console.warn(playerImprovements);
 
         let bodyData = {
             "improvements": playerImprovements,
             "coins_per_second": coinsPerSecond
         };
 
-        fetch(`https://game-api.pixie.fun/api/clicker/improvements/set/${telegramUserId}`, {
+        console.log("bodyData is: ")
+        console.log(bodyData)
+        console.log("=======================")
+
+        console.warn(playerImprovements);
+
+        fetch(`https://game-api.pixie.fun/api/clicker/improvements/set/${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -86,30 +101,34 @@ function Improvements() {
         }).then(response => response.json())
             .then(response => {
                 console.log(response);
+
+                console.warn(playerImprovements);
             });
-    }
+    }, [coinsPerSecond]);
+
 
     useEffect(() => {
-        if (socket && score !== null && score !== undefined) {
+        console.warn(playerImprovements);
+
+        if (socket && !isNaN(score) && score !== null && totalEarn !== null && !isNaN(totalEarn)) {
             const socket_data = JSON.stringify({
                 "Score": parseFloat(score),
-                "TelegramId": parseInt(telegramUserId),
+                "TelegramId": parseInt(userId),
                 "Energy": parseInt(energy),
                 "TotalEarn": parseFloat(totalEarn)
             });
-
             socket.send(socket_data);
-            console.log("Отправили пакет на сервер");
-            console.log(socket_data);
+
+            console.warn(playerImprovements);
         }
-    }, [score, socket, telegramUserId, energy, totalEarn]);
+    }, [score, socket, userId, energy, totalEarn]);
 
     if (!isLoaded) return <Loader />;
 
     return (
         <div className="App">
             <div className="improve_container">
-                <h1 className="improve_container-name">Майнинг</h1>
+                <h1 className="improve_container-name">{t("improvements")}</h1>
 
                 <div className="improve_container-row">
                     {improvements.map(item => (
@@ -119,8 +138,8 @@ function Improvements() {
                                     <img src={rocketImage} alt="" />
                                 </div>
                                 <div className="improve_container-row-item-main-rightSide">
-                                    <span className="improve_container-row-item-main-rightSide-name">{item.name_ru}</span>
-                                    <span className="improve_container-row-item-main-rightSide-description">Прибыль в час</span>
+                                    <span className="improve_container-row-item-main-rightSide-name">{i18n.language === 'ru' ? item.name_ru : item.name_en}</span>
+                                    <span className="improve_container-row-item-main-rightSide-description">{t('Profit per hour')}</span>
                                     <span className="improve_container-row-item-main-rightSide-coins">
                                         <img src={coinImage} alt="" />
                                         {item.coins_mining_now ? `${parseInt(item.coins_mining_now)} (+${parseInt(item.give_coins)})` : `+${parseInt(item.give_coins)}`}
