@@ -11,6 +11,10 @@
 }
 body{
   background: #101615;
+  background-image: url("Resources/images/clouds.svg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: 0 100px;
   font-family: "Inter", sans-serif;
 }
 .percents_for_referals_text{
@@ -46,6 +50,28 @@ body{
   display: flex;
   align-items: center;
 }
+.so-more-referrals-count{
+  color: #fff;
+  display: block;
+  margin-top: -10px;
+  margin-bottom: 30px;
+  font-size: 12px;
+}
+.referrals-get-coins-more{
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-family: "Pixel";
+}
+.referrals-get-coins-more > img{
+  width: 20px;
+  height: 20px;
+}
+.leaderboard-header-image{
+  display: block;
+  margin: 0 auto;
+  height: 106px;
+}
 .game-container_header-leftSide > img{
   border-radius: 50%;
   width: 31px;
@@ -71,6 +97,11 @@ body{
   background-size: 102%;
 
   box-shadow: 0px 0px 90px 0px #90a3b0;
+
+  user-select: none; /* Prevents text selection in most modern browsers */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 .clicker.disabled{
   opacity: 0.4;
@@ -159,6 +190,7 @@ body{
   justify-content: space-around;
 }
 .bottom_menu-container{
+  padding: 0 10px;
   background-image: url("Resources/images/menu-background.svg");
   background-size: 100% 100%;
   background-position: center;
@@ -174,10 +206,16 @@ body{
   max-width: 365px;
 }
 .bottom_menu-item{
-  width: 25%;
+  width: 20%;
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+.bottom_menu-item > img{
+  opacity: .3;
+}
+.bottom_menu-item.active > img{
+  opacity: 1;
 }
 .leaderboard-container{
   padding: 12px;
@@ -253,6 +291,55 @@ body{
 
   padding-bottom: 50px;
 }
+.referrals-counter-all{
+  font-size: 12px;
+}
+.referrals_get_coins{
+  outline: none;
+  border: none;
+
+  width: 100%;
+  padding: 18px 0;
+  display: block;
+  cursor: pointer;
+  background-color: #BBF245;
+  color: #101615;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+
+  font-family: "Pixel";
+}
+.referrals_task{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+  box-sizing: border-box;
+  background: unset;
+  outline: none;
+  border: none;
+  color: #fff;
+  border: 1px solid #BBF245;
+  background-color: #0b0f0e;
+  text-decoration: none;
+}
+.referrals_task-text-name{
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+.referrals_task > img{
+  display: block;
+  height: 60px;
+}
+.referrals_task-text{
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-left: 10px;
+  font-size: 12px;
+}
 .referrals_container-list-items-item{
   display: flex;
   align-items: center;
@@ -268,6 +355,7 @@ body{
   color: #fff;
   display: block;
   margin-bottom: 5px;
+  font-size: 14px;
 }
 .referrals_container-list-items-item-info-coins{
   font-family: "Pixel";
@@ -280,6 +368,7 @@ body{
 
   display: flex;
   align-items: center;
+  font-size: 16px;
 }
 .referrals_container-list-items-item-info-coins-image{
   display: block;
@@ -301,7 +390,7 @@ body{
   color: #fff;
   /*font-family: "Pixel";*/
   display: block;
-  font-size: 24px;
+  font-size: 14px;
   margin-bottom: 15px;
 }
 .referrals_container-name{
@@ -309,7 +398,19 @@ body{
   color: #fff;
   text-transform: uppercase;
 
-  margin-bottom: 20px;
+  margin-top: 20px;
+  font-size: 22px;
+}
+.reload-page-button{
+  outline: none;
+  border: none;
+  margin-top: 15px;
+  width: 80%;
+  padding: 15px 0;
+  background-color: #BBF245;
+  color: #101615;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 .referrals_share_container{
   position: fixed;
@@ -350,6 +451,8 @@ body{
   color: #fff;
   text-transform: uppercase;
   margin-bottom: 20px;
+  text-align: center;
+  margin-top: 10px;
 }
 .improve_container-name{
   font-weight: 400;
@@ -376,6 +479,46 @@ body{
   margin-bottom: 4%;
 
   box-shadow: 0px 0px 5px -4px #f1f1f1;
+}
+.coins_container-row-item{
+  color: #fff;
+  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(170, 167, 178, 0.09) 0%, rgba(73, 72, 76, 0.09) 100%);
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+  margin-bottom: 4%;
+
+  box-shadow: 0px 0px 5px -4px #f1f1f1;
+  padding: 15px;
+  box-sizing: border-box;
+}
+.coins_container-row{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 90vw;
+  margin: 0 auto;
+}
+.coins_container-row-item-name{
+  text-align: center;
+  margin-top: 20px;
+}
+.coins_container-row-item-price{
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-family: "Pixel";
+
+  margin: 0 auto;
+  margin-top: 10px;
+}
+.coins_container-row-item-price > img{
+  margin-right: 5px;
+  width: 20px;
+}
+.improve_container-row-item.disabled img{
+  opacity: .3;
 }
 .improve_container-row-item-main{
   display: flex;
@@ -460,6 +603,9 @@ body{
   background: #111414;
   color: #666;
   box-shadow: none;
+}
+.boosts_container-row-button.disabled img{
+  opacity: .3;
 }
 .improve_container-row-item.disabled span,
 .boosts_container-row-button.disabled span,
@@ -551,11 +697,18 @@ body{
 
   text-align: left;
 }
-.boosts_container{
+.boosts_container,
+.tasks_container{
   padding: 14px;
   box-sizing: border-box;
 }
-.boosts_container-name{
+.tasks_container-column{
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+.boosts_container-name,
+.tasks_container-name{
   font-weight: 500;
   font-size: 16px;
   line-height: 137%;
@@ -567,6 +720,68 @@ body{
 
   display: flex;
   align-items: flex-end;
+}
+.popup_tasks_buttons{
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+.offline_profit_container-content-button-close{
+  position: absolute;
+  z-index: 100005;
+  right: 10px;
+  margin-top: -340px;
+  width: 30px;
+  height: 30px;
+  outline: none;
+  border: none;
+  background: unset;
+  color: #fff;
+  font-size: 14px;
+  background: #333;
+  border-radius: 50%;
+  padding: 0;
+  line-height: 14px;
+}
+.popup_tasks_buttons-button{
+  display: block;
+  outline: none;
+  border: none;
+  width: 100%;
+
+  background: #bbf245;
+  padding: 15px 0;
+  box-sizing: border-box;
+
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #101615;
+
+  border-radius: 2px;
+}
+.popup_tasks_buttons-bottom{
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+.popup_tasks_buttons-bottom-text{
+  color: #fff;
+  margin-bottom: 10px;
+  display: block;
+  text-align: center;
+}
+.popup_tasks_buttons-button.second{
+  margin-left: 10px;
+}
+.offline_profit_container-content.tasks{
+  justify-content: space-around;
+}
+.offline_profit_container-content.tasks > .offline_profit_container-content-text{
+  margin-top: 20px;
 }
 .boosts_container-row-button-text-undername-coins{
   display: flex;
@@ -630,8 +845,6 @@ body{
   width: 20%;
   background-color: #bbf245;
   border-radius: 6px;
-
-  z-index: 10;
 }
 .level-content-value{
   color: #fff;
@@ -644,6 +857,180 @@ body{
   padding-left: 5px;
   margin-bottom: 5px;
 }
+.reloadPage-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.reloadPage-container_text{
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 18px;
+}
+.offline_profit_container{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  z-index: 1000000;
+}
+.offline_profit_container-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(16, 22, 21, 0.57);
+  backdrop-filter: blur(5px);
+
+  z-index: 100000;
+}
+.offline_profit_container-content{
+  border-top: 2px solid #bbf245;
+  border-radius: 15px 15px 0 0;
+  width: 100%;
+  height: 390px;
+
+  background-color: #101615;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  z-index: 100001;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.offline_profit_container-content-button{
+  outline: none;
+  border: none;
+
+  display: block;
+  margin-top: 30px;
+  width: 90%;
+  background: #bbf245;
+  border-radius: 2px;
+  font-weight: bold;
+  padding: 15px 0;
+  color: #101615;
+}
+.offline_profit_container-content-text{
+  color: #fff;
+  font-weight: bold;
+  font-size: 20px;
+}
+.offline_profit_container-content-value{
+  display: block;
+  margin-top: 10px;
+  font-size: 32px;
+  color: #fff;
+
+  font-family: "Pixel";
+
+  display: flex;
+  align-items: center;
+
+}
+.offline_profit_container-content-value > img{
+  margin-right: 10px;
+}
+.tasks_container-item{
+  border-radius: 2px;
+  outline: none;
+  border: none;
+  display: flex;
+  width: 100%;
+  padding: 15px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, rgba(170, 167, 178, 0.09) 0%, rgba(73, 72, 76, 0.09) 100%);
+  margin-bottom: 10px;
+}
+.tasks_container-item.disabled{
+  opacity: .3;
+}
+.tasks_container-item-text{
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  margin-left: 17px;
+  justify-content: space-between;
+  height: 100%;
+
+  width: 100%;
+}
+.tasks_container-item{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.tasks_container-item-text-name{
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.tasks_container-item-text-value{
+  font-family: "Pixel";
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 110%;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  
+  margin-top: 8px;
+}
+.tasks_container-item-image{
+  display: block;
+  width: 45px;
+  height: 45px;
+}
+.bottom_menu-item.tasks > img{
+  animation: pulse1 1.5s linear infinite;
+}
+.bottom_menu-item.tasks.active > img{
+  animation: unset;
+}
+.improvements_header-buttons{
+  display: flex;
+  width: 100%;
+  padding: 0 25px;
+  box-sizing: border-box;
+
+  margin-bottom: 10px;
+}
+.improvements_header-buttons-button{
+  display: block;
+  width: 100%;
+  padding: 5px 0;
+  font-size: 16px;
+  color: #f1f1f1;
+  background: #101615;
+  border: 1px solid #BBF245;
+  margin: 0 5px;
+  text-align: center;
+  text-decoration: none;
+}
+.improvements_header-buttons-button.active{
+  background-color: #BBF245;
+  color: #333;
+}
+.offline_profit_container.coins > .offline_profit_container-content > img{
+  display: block;
+  max-width: 160px;
+}
 
 
 
@@ -651,8 +1038,27 @@ body{
 
 
 
+@keyframes pulse1 {
+  0% {
+    transform: scale(1);
+  }
 
+  25% {
+    transform: scale(1.15);
+  }
 
+  50% {
+    transform: scale(1.3);
+  }
+
+  75% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
 
 
 

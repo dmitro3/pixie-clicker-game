@@ -10,60 +10,40 @@ import Loader from "../Components/Loader";
 import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
 
+import energyIcon from "../Resources/images/improvements/6.png";
+
 function Boosts() {
-    const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
+    const { score, coinsPerClick, energy, maxEnergy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
     const [clickBoostPrice, setClickBoostPrice] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
     const [multitapPrice, setMultitapPrice] = useState(null);
+    const [energyTotalPrice, setEnergyTotalPrice] = useState(null);
 
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
         let price = 1000;
         for(let i = 1; i <= coinsPerClick; i++){
-            if(i <= 5){
-                price = price * 1.6;
-            }else if(i <= 10){
-                price = price * 1.45;
-            }else if(i <= 15){
-                price = price * 1.35;
-            }else if(i <= 20){
-                price = price * 1.25;
-            }else if(i <= 25){
-                price = price * 1.1;
-            }else{
-                price = price * 1;
-            }
-
-            price = parseInt(price);
+            price = price * 2;
         }
         setMultitapPrice(price);
+
+        price = 1000;
+        for(let i = 1; i <= ((maxEnergy / 500) - 1); i++){
+            price = price * 2;
+        }
+        setEnergyTotalPrice(price);
     }, []);
 
     useEffect(() => {
         let price = 1000;
         for(let i = 1; i <= coinsPerClick; i++){
-            if(i <= 5){
-                price = price * 1.6;
-            }else if(i <= 10){
-                price = price * 1.45;
-            }else if(i <= 15){
-                price = price * 1.35;
-            }else if(i <= 20){
-                price = price * 1.25;
-            }else if(i <= 25){
-                price = price * 1.1;
-            }else{
-                price = price * 1;
-            }
-
-            price = parseInt(price);
+            price = price * 2;
         }
         setMultitapPrice(price);
     }, [coinsPerClick]);
-
     function multitap(){
         if(score < multitapPrice){
             return;
@@ -73,8 +53,6 @@ function Boosts() {
             "user_id":userId,
             "coins_per_click":coinsPerClick + 1
         };
-
-        console.log("multitapPrice is " + multitapPrice)
 
         updateGame({
             coinsPerClick:coinsPerClick + 1,
@@ -93,7 +71,41 @@ function Boosts() {
             });
     }
 
-    if (multitapPrice === null) return <Loader />;
+    useEffect(() => {
+        let price = 1000;
+        for(let i = 1; i <= ((maxEnergy / 500) - 1); i++){
+            price = price * 2;
+        }
+        setEnergyTotalPrice(price);
+    }, [maxEnergy]);
+    function energyTotal(){
+        if(score < energyTotalPrice){
+            return;
+        }
+
+        let data = {
+            "user_id":userId,
+            "maxEnergy":maxEnergy + 500
+        };
+
+        updateGame({
+            maxEnergy:maxEnergy + 500,
+            score: score - energyTotalPrice
+        });
+
+        fetch("https://game-api.pixie.fun/api/clicker/boosts/energytotal/buy",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json())
+            .then(response => {
+               console.log(response);
+            });
+    }
+
+    if (multitapPrice === null || energyTotalPrice === null) return <Loader />;
 
     return (
         <div className="App">
@@ -112,6 +124,36 @@ function Boosts() {
                                 </span>
                                 <span className="boosts_container-row-button-text-undername-lvl">
                                     {coinsPerClick + 1} lvl
+                                </span>
+                            </div>
+                        </div>
+                    </button>
+                    <button className={"boosts_container-row-button " + (score < energyTotalPrice ? 'disabled' : '')} onClick={energyTotal}>
+                        <img src={energyIcon} alt="" className="boosts_container-row-button-icon" />
+                        <div className="boosts_container-row-button-text">
+                            <span className="boosts_container-row-button-text-name">Energy limit</span>
+                            <div className="boosts_container-row-button-text-undername">
+                                <span className="boosts_container-row-button-text-undername-coins">
+                                    <img src={coinImage} alt=""/>
+                                    {parseInt(energyTotalPrice / 1000)}K
+                                </span>
+                                <span className="boosts_container-row-button-text-undername-lvl">
+                                    {(maxEnergy / 500) - 1} lvl
+                                </span>
+                            </div>
+                        </div>
+                    </button>
+                    <button className={"boosts_container-row-button disabled"}>
+                        <img src={energyIcon} alt="" className="boosts_container-row-button-icon" />
+                        <div className="boosts_container-row-button-text">
+                            <span className="boosts_container-row-button-text-name">Energy per second</span>
+                            <div className="boosts_container-row-button-text-undername">
+                                <span className="boosts_container-row-button-text-undername-coins">
+                                    <img src={coinImage} alt=""/>
+                                    coming soon
+                                </span>
+                                <span className="boosts_container-row-button-text-undername-lvl">
+                                    {/*{coinsPerClick + 1} lvl*/}
                                 </span>
                             </div>
                         </div>

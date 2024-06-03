@@ -8,6 +8,17 @@ import avatarImage from "./Resources/images/avatar.jpg";
 import WebAppUser from "@twa-dev/sdk";
 import Loader from "./Components/Loader";
 import {useTranslation} from "react-i18next";
+import ReloadPage from "./Components/ReloadPage";
+import pixie_0 from "./Resources/images/pixie/0.png";
+import pixie_1 from "./Resources/images/pixie/1.png";
+import pixie_2 from "./Resources/images/pixie/2.png";
+import pixie_3 from "./Resources/images/pixie/3.png";
+import pixie_4 from "./Resources/images/pixie/4.png";
+import pixie_5 from "./Resources/images/pixie/5.png";
+import pixie_6 from "./Resources/images/pixie/6.png";
+import pixie_7 from "./Resources/images/pixie/7.png";
+import pixie_8 from "./Resources/images/pixie/8.png";
+import pixie_9 from "./Resources/images/pixie/9.png";
 
 const Layout = () => {
     const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, totalEarn, maxEnergy, updateGame, userId } = useContext(GameContext);
@@ -16,8 +27,57 @@ const Layout = () => {
     const [lastName, setLastName] = useState(null);
     const [username, setUsername] = useState(null);
     const [loaded, setLoaded] = useState(false);
+    const [attentionReloadPage, setAttentionReloadPage] = useState(false);
+
+    const [passiveProfitPopup, setPassiveProfitPopup] = useState(false);
+    const [passiveProfitValue, setPassiveProfitValue] = useState(0);
+    const [coinsNeedForNewLevel, setCoinsNeedForNewLevel] = useState(0);
 
     const { t, i18n } = useTranslation();
+
+    const pixieImages = [
+        pixie_0,
+        pixie_1,
+        pixie_2,
+        pixie_3,
+        pixie_4,
+        pixie_5,
+        pixie_6,
+        pixie_7,
+        pixie_8,
+        pixie_9,
+    ];
+
+    const levels_score = [
+        [0, 100_000],
+        [100_001, 1_000_000],
+        [1_000_001, 5_000_000],
+        [5_000_001, 10_000_000],
+        [10_000_001, 20_000_000],
+        [20_000_001, 30_000_000],
+        [30_000_001, 50_000_000],
+        [50_000_001, 75_000_000],
+        [75_000_001, 100_000_000],
+        [100_000_001, 150_000_000],
+        [150_000_001, 200_000_000],
+        [200_000_001, 300_000_000],
+        [300_000_001, 400_000_000],
+        [400_000_001, 600_000_000],
+        [600_000_001, 1_000_000_000],
+        [1_000_000_001, 1_500_000_000],
+        [1_500_000_001, 2_000_000_000],
+        [2_000_000_001, 3_000_000_000],
+    ];
+
+    useEffect(() => {
+        levels_score.forEach((level, i) => {
+            if(parseFloat(levels_score[i][0]) <= parseFloat(totalEarn) && parseFloat(levels_score[i][1]) >= parseFloat(totalEarn)){
+                // setLevelPercents(totalEarn / (levels_score[i][1] / 100));
+                // setLevelValue(i);
+                setCoinsNeedForNewLevel(parseInt(levels_score[i][1] - totalEarn));
+            }
+        });
+    }, [totalEarn]);
 
     useEffect(() => {
         if(!userId){return;}
@@ -43,11 +103,16 @@ const Layout = () => {
                     let differenceInMinutes = parseInt(differenceInSeconds / 60);
 
                     if (differenceInMinutes > 1) {
+                        setPassiveProfitPopup(true);
+
                         if (differenceInSeconds > (60 * 60 * 3)) {
                             differenceInSeconds = 60 * 60 * 3;
                         }
 
-                        user_score = user_score + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
+
+                        let passiveProfitValue = parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
+                        setPassiveProfitValue(passiveProfitValue);
+                        user_score = user_score + passiveProfitValue;
                         total_earn = total_earn + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
                         energy = energy + parseInt(differenceInSeconds * 1);
                         if (energy > parseInt(response.user.max_energy)) {
@@ -85,6 +150,15 @@ const Layout = () => {
     }, [coinsPerSecond]);
 
     useEffect(() => {
+        if (socket) {
+            console.log("socket-соединение установлено")
+
+            socket.onclose = () => {
+                console.log("socket-соединение закрыто")
+                setAttentionReloadPage(true);
+            };
+        }
+
         if (socket && !isNaN(score) && score !== null && totalEarn !== null && !isNaN(totalEarn)) {
             const socket_data = JSON.stringify({
                 "Score": parseFloat(score),
@@ -107,15 +181,60 @@ const Layout = () => {
         }
     }
 
+    function passiveProfitPopupClose(){
+        setPassiveProfitPopup(false);
+    }
+
+    function nicknameFormat(first_name, last_name, username){
+        let nickname = "";
+        if(first_name !== 'None' && first_name !== null){
+            nickname = first_name;
+        }
+        if(last_name !== 'None' && last_name !== null){
+            if(nickname !== ""){
+                nickname = nickname + " " + last_name;
+            }else{
+                nickname = last_name;
+            }
+        }
+
+        if(nickname === ""){
+            nickname = username;
+
+            if(nickname === ""){
+                nickname = "Hidden username";
+            }
+        }
+
+        return nickname;
+    }
+
+    if(attentionReloadPage) return <ReloadPage />;
     if (!loaded || !playerImprovements || isNaN(score)) return <Loader />;
 
     return (
         <div className="app">
+            {passiveProfitPopup ? <>
+                <div className="offline_profit_container">
+                    <div className="offline_profit_container-content">
+                        <span className="offline_profit_container-content-text">{t('Passive income amounted to')}</span>
+                        <span className="offline_profit_container-content-value">
+                            <img src={coinImage} alt=""/>
+                            {parseInt(passiveProfitValue)}
+                        </span>
+                        <button className="offline_profit_container-content-button" onClick={passiveProfitPopupClose}>OK</button>
+                    </div>
+                    <div className="offline_profit_container-overlay"></div>
+                </div>
+            </> : ''}
             <div className="game-container_header">
                 <div className="game-container_header-leftSide">
-                    <img src={avatarImage} alt="" />
+                    {/*<img src={avatarImage} alt="" />*/}
+                    <img src={pixieImages[userId % 10]} alt="avatar"/>
                     <span className="game-container_header-leftSide-name">
-                        {firstName ? `${firstName} ${lastName || ''}` : username}
+                        {/*{firstName !== 'None' ? firstName : ''} {lastName !== 'None' ? lastName : ''} || username}*/}
+                        {/*{firstName ? firstName + " " + (lastName === 'None' ? '' : lastName) : username || 'Hidden username'}*/}
+                        {nicknameFormat(firstName, lastName, username)}
                     </span>
                 </div>
             </div>
@@ -130,7 +249,7 @@ const Layout = () => {
                     </div>
                     <div className="game-container_stats-item">
                         <span className="game-container_stats-item-name">{t('Coins to level up')}</span>
-                        <span className="game-container_stats-item-value">0</span>
+                        <span className="game-container_stats-item-value">{parseInt(coinsNeedForNewLevel / 1000)}K</span>
                     </div>
                     <div className="game-container_stats-item">
                         <span className="game-container_stats-item-name">{t('Profit per hour')}</span>
@@ -142,7 +261,7 @@ const Layout = () => {
                 </div>
                 <span className="score">
                     <img src={coinImage} alt="" />
-                    {parseInt(score)}
+                    {parseInt(score).toLocaleString('en')}
                 </span>
             </div>
 

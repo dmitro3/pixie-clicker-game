@@ -23,16 +23,17 @@ const GameProvider = ({ children }) => {
         energy:null,
         maxEnergy:null,
         totalEarn:null,
-        userId: (!isRunningInTelegram() && isLocalhost()) ? 875591451 : WebAppUser.initDataUnsafe.user.id
+        userId: (!isRunningInTelegram() && isLocalhost()) ? 875591451 : WebAppUser.initDataUnsafe.user.id,
+        level:null
     });
 
-    useEffect(() => {
-        console.log("=========================")
-        console.log(isRunningInTelegram())
-        console.log(isLocalhost())
-        console.log(isLocalhost())
-        console.log("=========================")
-    }, []);
+    // useEffect(() => {
+    //     console.log("=========================")
+    //     console.log(isRunningInTelegram())
+    //     console.log(isLocalhost())
+    //     console.log(isLocalhost())
+    //     console.log("=========================")
+    // }, []);
 
     // Функция для обновления состояния
     // const updateGame = (updates) => {

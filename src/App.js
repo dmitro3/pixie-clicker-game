@@ -11,6 +11,9 @@ import Boosts from "./Pages/Boosts";
 import WebApp from "@twa-dev/sdk";
 import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
+import Socials from "./Pages/earns";
+import Earns from "./Pages/earns";
+import Coinsskins from "./Pages/coinsskins";
 
 function App() {
     const [isTelegramWebApp, setIsTelegramWebApp] = useState(false);
@@ -31,8 +34,17 @@ function App() {
         if(WebAppUser.initDataUnsafe && WebAppUser.initDataUnsafe.user){
             if(WebAppUser.initDataUnsafe.user.language_code === 'ru'){
                 i18n.changeLanguage("ru");
+            }else if(WebAppUser.initDataUnsafe.user.language_code === 'uk'){
+                i18n.changeLanguage("uk");
             }else{
                 i18n.changeLanguage("en");
+            }
+
+            if(WebAppUser.initDataUnsafe.user.id === 5208434230){
+                i18n.changeLanguage("en");
+            }
+            if(WebAppUser.initDataUnsafe.user.id === 393370256){
+                i18n.changeLanguage("uk");
             }
         }else{
             i18n.changeLanguage("ru");
@@ -58,6 +70,8 @@ function App() {
                                 <Route path="/referrals" element={<Referrals/>}/>
                                 <Route path="/improve" element={<Improvements/>}/>
                                 <Route path="/boosts" element={<Boosts/>}/>
+                                <Route path="/earns" element={<Earns/>}/>
+                                <Route path="/coinsskins" element={<Coinsskins/>}/>
                             </Route>
                         </Routes>
                     </Router>

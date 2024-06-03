@@ -1,0 +1,171 @@
+import '../App.css';
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import avatarImage from "../Resources/images/avatar.jpg";
+import coinImage from "../Resources/images/coin.svg";
+import rocketImage from "../Resources/images/rocket.svg";
+import GameContext from "../Context/GameContext";
+import WebSocketContext from "../Context/WebSocketContext";
+import Loader from "../Components/Loader";
+import WebAppUser from "@twa-dev/sdk";
+import {useTranslation} from "react-i18next";
+import telegramIcon from "../Resources/images/tasks/telegram.svg";
+import xIcon from "../Resources/images/x-twitter.svg";
+import iconArrow from "../Resources/images/tasks/arrow.svg";
+import present_image from "../Resources/images/present.svg";
+
+function Earns() {
+    const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
+    const socket = useContext(WebSocketContext);
+    const [clickBoostPrice, setClickBoostPrice] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const [tasks, setTasks] = useState([]);
+    const [viewPopup, setViewPopup] = useState(false);
+    const [currentTask, setCurrentTask] = useState(null);
+    const [taskNotCompleted, setTaskNotCompleted] = useState(false);
+    const [shareText, setShareText] = useState("");
+
+    const { t, i18n } = useTranslation();
+
+    useEffect(() => {
+        if(i18n.language === 'ru'){
+            setShareText("Играй со мной, стань босом студии и получай токены через аирдроп!%0A\uD83D\uDCB8 +20k монет за вход%0A\uD83D\uDD25 +50k монет, если у тебя есть Telegram Premium")
+        }else if(i18n.language === 'uk'){
+            setShareText("Грай зі мною, стань босом студії та отримай токени через ейрдроп!%0A\uD83D\uDCB8 +20k монет у якості подарунка%0A\uD83D\uDD25 +50k монет, якщо у тебе Telegram Premium")
+        }else{
+            setShareText("Play with be, become a studio boss and get tokens via airdrop! %0A\uD83D\uDCB8 +20k coins as a gift%0A\uD83D\uDD25 +50k coins, if you have Telegram Premium")
+        }
+
+        let language_code_is = WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code : 'ru';
+
+        fetch(`https://game-api.pixie.fun/api/clicker/tasks/get/all/${userId}/${language_code_is}`)
+            .then(response => response.json())
+            .then(response => {
+                setTasks(response.tasks);
+                setIsLoaded(true);
+            });
+    }, []);
+
+    function translatedName(item){
+        if(i18n.language === 'ru'){
+            return item.name_ru;
+        }else if(i18n.language === 'uk'){
+            return item.name_uk;
+        }else{
+            return item.name_en;
+        }
+    }
+
+    function taskMore(task){
+        if(task.task_id){
+            return;
+        }
+
+        setCurrentTask(task);
+        setViewPopup(true);
+    }
+    function locateToLink(link){
+        return window.location = link;
+    }
+    function checkRules(task){
+        let data = {
+            "user_id":userId,
+            "task_id":task.id
+        };
+
+        fetch('https://game-api.pixie.fun/api/clicker/tasks/check/complete/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json())
+            .then(response => {
+               if(response.message === 'ok'){
+                   updateGame({
+                       score: parseFloat(score) + parseFloat(task.coins)
+                   });
+
+                   setViewPopup(false);
+                   setCurrentTask(null);
+
+                   setTasks([]);
+                   setIsLoaded(false);
+
+                   let language_code_is = WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code : 'ru';
+                   fetch(`https://game-api.pixie.fun/api/clicker/tasks/get/all/${userId}/${language_code_is}`)
+                       .then(response => response.json())
+                       .then(response => {
+                           setTasks(response.tasks);
+                           setIsLoaded(true);
+                       });
+               }else{
+                   setTaskNotCompleted(true);
+                   setTimeout(()=>{
+                       setTaskNotCompleted(false);
+                   }, 3000);
+               }
+            });
+    }
+
+    function closePopupTasks(){
+        setViewPopup(false);
+        setCurrentTask(null);
+        setTaskNotCompleted(false);
+    }
+
+    if (!isLoaded) return <Loader />;
+
+    return (
+        <div className="App">
+            <div className="tasks_container">
+                <h1 className="tasks_container-name">{t('Tasks')}</h1>
+
+                {viewPopup ?
+                    <div className="offline_profit_container">
+                        <div className="offline_profit_container-content tasks">
+                            <button className="offline_profit_container-content-button-close" onClick={()=>{closePopupTasks()}}>✕</button>
+                            <span className="offline_profit_container-content-text">{translatedName(currentTask)}</span>
+                            <span className="offline_profit_container-content-value">
+                                <img src={coinImage} alt=""/>
+                                {currentTask.coins.toLocaleString()}
+                            </span>
+                            <div className="popup_tasks_buttons-bottom">
+                                {taskNotCompleted ? <span className="popup_tasks_buttons-bottom-text">{t('Task not completed')}!</span> : ''}
+                                <div className="popup_tasks_buttons">
+                                    <button className="popup_tasks_buttons-button" onClick={()=>{locateToLink(currentTask.link)}}>{t('Subscribe')}</button>
+                                    <button className="popup_tasks_buttons-button second" onClick={()=>{checkRules(currentTask)}}>{t('Check')}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="offline_profit_container-overlay" onClick={()=>{closePopupTasks()}}></div>
+                    </div>
+                    : ''}
+
+                <div className="tasks_container-column">
+                    <a href={"https://t.me/share/url?url=https://t.me/pixie_project_bot?start="+ userId +"&text=" + shareText} className="referrals_task">
+                        <img src={present_image} alt=""/>
+                        <div className="referrals_task-text">
+                            <span className="referrals_task-text-name">{t('Invite friends task')}</span>
+                            <span className="referrals_task-text-undername">{t('Invite your friends and get both 20k coins each. Or 50k each for a friend who has Telegram premium')}</span>
+                        </div>
+                    </a>
+
+                    {tasks.map((task) => (
+                        <button className={"tasks_container-item " + (task.task_id ? 'disabled' : '')} onClick={() => {taskMore(task)}}>
+                            <img src={task.task_id === 8 ? xIcon : telegramIcon} alt="" className="tasks_container-item-image"/>
+                            <div className="tasks_container-item-text">
+                                <span className="tasks_container-item-text-name">{translatedName(task)}</span>
+                                <span className="tasks_container-item-text-value">+{task.coins.toLocaleString('ru')}</span>
+                            </div>
+                            <img src={iconArrow} alt="" className="tasks_container-item-icon-row"/>
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Earns;

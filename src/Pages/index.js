@@ -6,75 +6,81 @@ import rocketIcon from "../Resources/images/rocket.svg"
 import GameContext from "../Context/GameContext";
 import WebApp from "@twa-dev/sdk";
 import WebAppUser from "@twa-dev/sdk";
+import {useTranslation} from "react-i18next";
 
 function Index() {
-    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, userId } = useContext(GameContext);
+    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, userId, level } = useContext(GameContext);
     const [isClicked, setIsClicked] = useState(false);
     const [clicks, setClicks] = useState([]);
 
     const [vibrateCheckText, setVibrateCheckText] = useState("Кликни для проверки");
 
-    // const [levelPercents, setLevelPercents] = useState(0);
+    const [levelPercents, setLevelPercents] = useState(0);
+    const [levelValue, setLevelValue] = useState(0);
 
-    // const levels_score = [
-    //     [0, 10000],
-    //     [10001, 20000],
-    //     [20001, 30000],
-    //     [30001, 50000],
-    //     [50001, 70000],
-    //     [70001, 90000],
-    //     [90001, 110000],
-    //     [110001, 150000],
-    //     [150001, 190000],
-    //     [190001, 250000],
-    //     [250001, 350000],
-    //     [350001, 450000],
-    //     [450001, 550000],
-    //     [550001, 650000],
-    //     [650001, 750000],
-    //     [750001, 1000000],
-    //     [1000001, 1250000],
-    //     [1250001, 1500000],
-    //     [1500001, 1750000],
-    //     [1750001, 2000000],
-    //     [2000001, 3000000],
-    //     [3000001, 4000000],
-    //     [4000001, 5000000],
-    //     [5000001, 6000000],
-    //     [6000001, 7000000],
-    //     [7000001, 8000000],
-    //     [8000001, 9000000],
-    //     [9000001, 10000000],
-    // ];
+    const levels_score = [
+        [0, 100_000],
+        [100_001, 1_000_000],
+        [1_000_001, 5_000_000],
+        [5_000_001, 10_000_000],
+        [10_000_001, 20_000_000],
+        [20_000_001, 30_000_000],
+        [30_000_001, 50_000_000],
+        [50_000_001, 75_000_000],
+        [75_000_001, 100_000_000],
+        [100_000_001, 150_000_000],
+        [150_000_001, 200_000_000],
+        [200_000_001, 300_000_000],
+        [300_000_001, 400_000_000],
+        [400_000_001, 600_000_000],
+        [600_000_001, 1_000_000_000],
+        [1_000_000_001, 1_500_000_000],
+        [1_500_000_001, 2_000_000_000],
+        [2_000_000_001, 3_000_000_000],
+    ];
 
-    // useEffect(() => {
-    //     let iteraion_number = 0;
-    //     let level_score_min = 0;
-    //     let level_score_max = 0;
-    //
-    //     levels_score.forEach((item, i) => {
-    //         if(levels_score[0] >= score && levels_score[1] <= score){
-    //             iteraion_number = i;
-    //             level_score_min = levels_score[0];
-    //             level_score_max = levels_score[1];
-    //         }
-    //     });
-    //
-    //     let percents = level_score_max / 100 * (score - level_score_min);
-    //     setLevelPercents(percents);
-    // }, []);
+    useEffect(() => {
+        levels_score.forEach((level, i) => {
+            if(parseFloat(levels_score[i][0]) <= parseFloat(totalEarn) && parseFloat(levels_score[i][1]) >= parseFloat(totalEarn)){
+                setLevelPercents(totalEarn / (levels_score[i][1] / 100));
+
+                updateGame({
+                    level: parseInt(i)
+                });
+
+                setLevelValue(i);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        levels_score.forEach((level, i) => {
+            if(parseFloat(levels_score[i][0]) <= parseFloat(totalEarn) && parseFloat(levels_score[i][1]) >= parseFloat(totalEarn)){
+                setLevelPercents(totalEarn / (levels_score[i][1] / 100));
+
+                updateGame({
+                    level: parseInt(i)
+                });
+
+                setLevelValue(i);
+            }
+        });
+    }, [totalEarn]);
+
+    const { t, i18n } = useTranslation();
 
     const handleClick = (event) => {
-        if(WebApp){
-            WebApp.HapticFeedback.impactOccurred('medium');
-        }
-
         let coinsPerClickNow = coinsPerClick;
         let isMinusEnergy = true;
 
         if(energy < coinsPerClick){
-            coinsPerClickNow = 1;
-            isMinusEnergy = false;
+            return;
+            // coinsPerClickNow = 1;
+            // isMinusEnergy = false;
+        }
+
+        if(WebApp){
+            WebApp.HapticFeedback.impactOccurred('medium');
         }
         
         const touch = event.changedTouches[0];
@@ -106,15 +112,15 @@ function Index() {
     return (
         <div className="App">
             <div>
-                {/*<div className="level-content">*/}
-                {/*    <span className="level-content-value">Level: 1</span>*/}
-                {/*    <div className="level-line-container">*/}
-                {/*        <div className="level-line" style={{width:levelPercents + '%'}}></div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                <div className="level-content">
+                    <span className="level-content-value">Level: {levelValue}</span>
+                    <div className="level-line-container">
+                        <div className="level-line" style={{width:levelPercents + '%'}}></div>
+                    </div>
+                </div>
 
-                {/*<div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={*/}
-                <div className={"clicker"} onTouchEnd={handleClick} style={
+                <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={
+                // <div className={"clicker"} onTouchEnd={handleClick} style={
                     // isClicked ? {boxShadow: '0px 0px 3px 20px rgba(217, 217, 217, 0.06)'} : {}
                     isClicked ? {boxShadow: '0px 0px 110px 0px #90a3b0'} : {}
                 }></div>
@@ -150,7 +156,12 @@ function Index() {
                 </div>
 
                 {userId === 875591451 ?
-                <span className="admin-text">{WebAppUser.initDataUnsafe && WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code : ''}</span> : ''}
+                    <span className="admin-text">{WebAppUser.initDataUnsafe && WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code
+                : ''}</span> : ''}
+
+                {userId === 463600889 ?
+                    <span className="admin-text">{WebAppUser.initDataUnsafe && WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code
+                : ''}</span> : ''}
             </div>
         </div>
     );
