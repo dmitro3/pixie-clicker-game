@@ -7,9 +7,47 @@ import GameContext from "../Context/GameContext";
 import WebApp from "@twa-dev/sdk";
 import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
+import stoneCoin1 from "../Resources/images/coins/stone-1.svg";
+import stoneCoin2 from "../Resources/images/coins/stone-2.svg";
+import woodenCoin1 from "../Resources/images/coins/wooden-1.svg";
+import bronzeCoin1 from "../Resources/images/coins/bronze-1.svg";
+import silverCoin1 from "../Resources/images/coins/silver-1.svg";
+import goldenCoin1 from "../Resources/images/coins/gold-1.svg";
+import goldenCoin2 from "../Resources/images/coins/gold-2.svg";
+import styled from "styled-components";
+import skin_0 from "../Resources/images/skins/0.png";
+import skin_1 from "../Resources/images/skins/1.png";
+import skin_2 from "../Resources/images/skins/2.png";
+import skin_3 from "../Resources/images/skins/3.png";
+import skin_4 from "../Resources/images/skins/4.png";
+import skin_5 from "../Resources/images/skins/5.png";
+import skin_6 from "../Resources/images/skins/6.png";
+import skin_7 from "../Resources/images/skins/7.png";
+import skin_8 from "../Resources/images/skins/8.png";
+import skin_9 from "../Resources/images/skins/9.png";
+import skin_10 from "../Resources/images/skins/10.png";
+import skin_11 from "../Resources/images/skins/11.png";
+import skin_12 from "../Resources/images/skins/12.png";
+import skin_13 from "../Resources/images/skins/13.png";
+import skin_14 from "../Resources/images/skins/14.png";
+import skin_15 from "../Resources/images/skins/15.png";
+import skin_16 from "../Resources/images/skins/16.png";
+import skin_17 from "../Resources/images/skins/17.png";
+import skin_18 from "../Resources/images/skins/18.png";
+import skin_19 from "../Resources/images/skins/19.png";
+import skin_20 from "../Resources/images/skins/20.png";
+import skin_21 from "../Resources/images/skins/21.png";
+import skin_22 from "../Resources/images/skins/22.png";
+import skin_23 from "../Resources/images/skins/23.png";
+import skin_24 from "../Resources/images/skins/24.png";
+import skin_25 from "../Resources/images/skins/25.png";
+import skin_26 from "../Resources/images/skins/26.png";
+import skin_27 from "../Resources/images/skins/27.png";
+
+import default_skin from "../Resources/images/human-free.png";
 
 function Index() {
-    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, userId, level } = useContext(GameContext);
+    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, userId, level, coinId, coinImageId, skinImageId } = useContext(GameContext);
     const [isClicked, setIsClicked] = useState(false);
     const [clicks, setClicks] = useState([]);
 
@@ -40,6 +78,8 @@ function Index() {
     ];
 
     useEffect(() => {
+        console.log("coin image id is " + coinImageId)
+
         levels_score.forEach((level, i) => {
             if(parseFloat(levels_score[i][0]) <= parseFloat(totalEarn) && parseFloat(levels_score[i][1]) >= parseFloat(totalEarn)){
                 setLevelPercents(totalEarn / (levels_score[i][1] / 100));
@@ -109,8 +149,87 @@ function Index() {
         setTimeout(() => setIsClicked(false), 100); // Убрать эффект через 100 мс
     };
 
+    const coins_images = [
+        "",
+        "",
+        stoneCoin1,
+        stoneCoin2,
+        woodenCoin1,
+        bronzeCoin1,
+        silverCoin1,
+        goldenCoin1,
+        goldenCoin2
+    ];
+
+    const skins_images = [
+        skin_0,
+        skin_1,
+        skin_2,
+        skin_3,
+        skin_4,
+        skin_5,
+        skin_6,
+        skin_7,
+        skin_8,
+        skin_9,
+        skin_10,
+        skin_11,
+        skin_12,
+        skin_13,
+        skin_14,
+        skin_15,
+        skin_16,
+        skin_17,
+        skin_18,
+        skin_19,
+        skin_20,
+        skin_21,
+        skin_22,
+        skin_23,
+        skin_24,
+        skin_25,
+        skin_26,
+        skin_27,
+    ];
+
+    const StyledClicker = styled.div`
+        width: 70vw;
+        height: 70vw;
+        margin: 0 auto;
+        outline: none;
+        border: none;
+        border-radius: 50%;
+        background-image: url(${"Resources/images/clicker-background-default.svg"});
+        background-position: center;
+        background-size: 102%;
+        box-shadow: 0px 0px 90px 0px #90a3b0;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: ${isClicked ? '0px 0px 110px 0px #90a3b0' : undefined};
+        background-image: url(${coins_images[coinImageId]})
+    `;
+
+    let afterStyles = `
+        .clicker::after{
+            content: "";
+            width: 165px;
+            height: 165px;
+            display: block;
+            background-image: url(${skinImageId ? skins_images[skinImageId] : default_skin});
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center center;
+        }
+    `
+
     return (
         <div className="App">
+            <style>{afterStyles}</style>
             <div>
                 <div className="level-content">
                     <span className="level-content-value">Level: {levelValue}</span>
@@ -119,11 +238,16 @@ function Index() {
                     </div>
                 </div>
 
-                <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={
-                // <div className={"clicker"} onTouchEnd={handleClick} style={
-                    // isClicked ? {boxShadow: '0px 0px 3px 20px rgba(217, 217, 217, 0.06)'} : {}
-                    isClicked ? {boxShadow: '0px 0px 110px 0px #90a3b0'} : {}
-                }></div>
+                {!isNaN(coinImageId) ?
+                    <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={{
+                        boxShadow: isClicked ? '0px 0px 110px 0px #90a3b0' : undefined,
+                        backgroundImage: `url(${coins_images[coinImageId]})`
+                    }}></div>
+                :
+                    <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={
+                        isClicked ? {boxShadow: '0px 0px 110px 0px #90a3b0'} : {}
+                    }></div>
+                }
                 {clicks.map(({ id, x, y, coinsPerClickNow }) => (
                     <div
                         key={id}

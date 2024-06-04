@@ -122,6 +122,7 @@ const Layout = () => {
                 }
 
                 console.warn(JSON.parse(response.user.improvements_data))
+                console.log(response.user)
                 updateGame({
                     score: user_score,
                     coinsPerClick: parseFloat(response.user.coins_per_click),
@@ -129,7 +130,11 @@ const Layout = () => {
                     playerImprovements: JSON.parse(response.user.improvements_data),
                     energy: parseInt(energy),
                     maxEnergy: parseInt(response.user.max_energy),
-                    totalEarn: parseInt(total_earn)
+                    totalEarn: parseInt(total_earn),
+                    coinImageId:parseInt(response.user.coin_image_id),
+                    skinImageId:parseInt(response.user.skin_image_id),
+                    coinId:parseInt(response.user.coin_id),
+                    skinId:parseInt(response.user.skin_id)
                 });
 
                 setLoaded(true);

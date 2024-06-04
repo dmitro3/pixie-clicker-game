@@ -24,7 +24,11 @@ const GameProvider = ({ children }) => {
         maxEnergy:null,
         totalEarn:null,
         userId: (!isRunningInTelegram() && isLocalhost()) ? 875591451 : WebAppUser.initDataUnsafe.user.id,
-        level:null
+        level:null,
+        coinId:null,
+        skinId:null,
+        coinImageId:null,
+        skinImageId:null
     });
 
     // useEffect(() => {

@@ -10,8 +10,6 @@ import Loader from "../Components/Loader";
 import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
 
-import rustyCoin1 from "../Resources/images/coins/rusty-1.svg";
-import rustyCoin2 from "../Resources/images/coins/rusty-2.svg";
 import stoneCoin1 from "../Resources/images/coins/stone-1.svg";
 import stoneCoin2 from "../Resources/images/coins/stone-2.svg";
 import woodenCoin1 from "../Resources/images/coins/wooden-1.svg";
@@ -20,8 +18,8 @@ import silverCoin1 from "../Resources/images/coins/silver-1.svg";
 import goldenCoin1 from "../Resources/images/coins/gold-1.svg";
 import goldenCoin2 from "../Resources/images/coins/gold-2.svg";
 
-function Coinsskins() {
-    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
+function Coins() {
+    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId, coinId, coinImageId } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
     const [coins, setCoins] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -31,8 +29,8 @@ function Coinsskins() {
     const { t, i18n } = useTranslation();
 
     const coins_images = [
-        rustyCoin1,
-        rustyCoin2,
+        "",
+        "",
         stoneCoin1,
         stoneCoin2,
         woodenCoin1,
@@ -44,6 +42,7 @@ function Coinsskins() {
 
 
     useEffect(() => {
+        console.log("coinId is " + coinId)
         fetch(`https://game-api.pixie.fun/api/clicker/coins/get/all/${userId}`)
             .then(response => response.json())
             .then(response => {
@@ -78,6 +77,10 @@ function Coinsskins() {
     }
 
     function clickCoinCard(coin){
+        if(coin.user_id !== null){
+            return;
+        }
+
         setCurrentCoin(coin);
         setViewPopup(true);
     }
@@ -88,6 +91,11 @@ function Coinsskins() {
     }
 
     function buyCoin(){
+        if(score < currentCoin.price){
+            return;
+        }
+
+        setIsLoaded(false);
         let data = {
             "coin_id":currentCoin.id,
             "user_id":userId
@@ -102,13 +110,50 @@ function Coinsskins() {
         }).then(response => response.json())
             .then(response => {
                 if(response.message === "ok"){
+                    updateGame({
+                        score: score - parseFloat(currentCoin.price)
+                    })
+                    setViewPopup(false);
+                    setCurrentCoin(null);
 
+                    fetch(`https://game-api.pixie.fun/api/clicker/coins/get/all/${userId}`)
+                        .then(response => response.json())
+                        .then(response => {
+                            let coins = response.coins;
+                            setCoins(coins);
+
+                            setIsLoaded(true);
+                        });
                 }else{
 
                 }
-                setCoins(coins);
+            });
+    }
 
-                setIsLoaded(true);
+    function changeCoin(coin){
+        let data = {
+            "coin_id":coin.id,
+            "user_id":userId
+        };
+
+        fetch(`https://game-api.pixie.fun/api/clicker/coins/set`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(response => {
+                if(response.message === "ok"){
+                    updateGame({
+                        coinId:coin.id,
+                        coinImageId:coin.image_id
+                    });
+
+                }else{
+                    console.log("error")
+                }
             });
     }
 
@@ -117,11 +162,12 @@ function Coinsskins() {
     return (
         <div className="App">
             <div className="improve_container">
-                <h1 className="improve_container-name">{t("improvements")}</h1>
+                {/*<h1 className="improve_container-name">{t("improvements")}</h1>*/}
 
                 <div className="improvements_header-buttons">
-                    <NavLink to="/improve" activeClassName="active" className="improvements_header-buttons-button">Улучшения</NavLink>
-                    <NavLink to="/coinsskins" activeClassName="active" className="improvements_header-buttons-button">Монеты и скины</NavLink>
+                    <NavLink to="/improve" activeClassName="active" className="improvements_header-buttons-button">{t('improvements')}</NavLink>
+                    <NavLink to="/coins" activeClassName="active" className="improvements_header-buttons-button">{t('coins')}</NavLink>
+                    <NavLink to="/skins" activeClassName="active" className="improvements_header-buttons-button">{t('skins')}</NavLink>
                 </div>
 
                 {viewPopup ?
@@ -137,7 +183,7 @@ function Coinsskins() {
                             <div className="popup_tasks_buttons-bottom">
                                 <div className="popup_tasks_buttons">
                                     <button className="popup_tasks_buttons-button" onClick={()=> closePopup()}>{t('Close')}</button>
-                                    <button className="popup_tasks_buttons-button second" onClick={()=>{buyCoin(currentCoin.id)}}>{t('Buy')}</button>
+                                    <button className={"popup_tasks_buttons-button second " + (score < currentCoin.price ? 'disabled' : '')} onClick={()=>{buyCoin(currentCoin.id)}}>{t('Buy')}</button>
                                 </div>
                             </div>
                         </div>
@@ -147,12 +193,15 @@ function Coinsskins() {
 
                 <div className="coins_container-row">
                     {coins.map(coin => (
-                        <div className={"coins_container-row-item"} onClick={() => clickCoinCard(coin)}>
+                        <div className={"coins_container-row-item " + (coin.user_id ? 'buyed' : '') } onClick={() => clickCoinCard(coin)}>
                             <img src={coins_images[coin.image_id]} alt=""/>
                             <span className="coins_container-row-item-name">{translatedName(coin)}</span>
                             <span className="coins_container-row-item-price">
-                                <img src={coinImage} alt=""/>
-                                {(coin.price).toLocaleString('en')}
+                                {coin.user_id ?
+                                    coin.coin_id === coinId ? t('selected') : <button className="coins-button-choose" onClick={() => changeCoin(coin)}>{t('choose')}</button>
+                                :
+                                    <><img src={coinImage} alt=""/>{(coin.price).toLocaleString('en')}</>
+                                }
                             </span>
                         </div>
                     ))}
@@ -162,4 +211,4 @@ function Coinsskins() {
     );
 }
 
-export default Coinsskins;
+export default Coins;

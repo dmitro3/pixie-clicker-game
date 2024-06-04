@@ -13,7 +13,9 @@ import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
 import Socials from "./Pages/earns";
 import Earns from "./Pages/earns";
-import Coinsskins from "./Pages/coinsskins";
+import Coinsskins from "./Pages/coins";
+import Coins from "./Pages/coins";
+import Skins from "./Pages/skins";
 
 function App() {
     const [isTelegramWebApp, setIsTelegramWebApp] = useState(false);
@@ -53,8 +55,8 @@ function App() {
         if (platform === 'ios' || platform === 'android') {
             setIsTelegramWebApp(true);
         } else {
-            setIsTelegramWebApp(true);
-            // setIsTelegramWebApp(false);
+            // setIsTelegramWebApp(true);
+            setIsTelegramWebApp(false);
         }
     }, [platform]);
 
@@ -71,7 +73,8 @@ function App() {
                                 <Route path="/improve" element={<Improvements/>}/>
                                 <Route path="/boosts" element={<Boosts/>}/>
                                 <Route path="/earns" element={<Earns/>}/>
-                                <Route path="/coinsskins" element={<Coinsskins/>}/>
+                                <Route path="/coins" element={<Coins/>}/>
+                                <Route path="/skins" element={<Skins/>}/>
                             </Route>
                         </Routes>
                     </Router>

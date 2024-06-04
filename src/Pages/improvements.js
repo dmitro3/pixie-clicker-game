@@ -171,11 +171,12 @@ function Improvements() {
     return (
         <div className="App">
             <div className="improve_container">
-                <h1 className="improve_container-name">{t("improvements")}</h1>
+                {/*<h1 className="improve_container-name">{t("improvements")}</h1>*/}
 
                 <div className="improvements_header-buttons">
-                    <NavLink to="/improve" activeClassName="active" className="improvements_header-buttons-button">Улучшения</NavLink>
-                    <NavLink to="/coinsskins" activeClassName="active" className="improvements_header-buttons-button">Монеты и скины</NavLink>
+                    <NavLink to="/improve" activeClassName="active" className="improvements_header-buttons-button">{t('improvements')}</NavLink>
+                    <NavLink to="/coins" activeClassName="active" className="improvements_header-buttons-button">{t('coins')}</NavLink>
+                    <NavLink to="/skins" activeClassName="active" className="improvements_header-buttons-button">{t('skins')}</NavLink>
                 </div>
 
                 <div className="improve_container-row">
