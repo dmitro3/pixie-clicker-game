@@ -34,6 +34,9 @@ import improvement_icon_21 from "../Resources/images/improvements/21.png";
 import improvement_icon_22 from "../Resources/images/improvements/22.png";
 import improvement_icon_23 from "../Resources/images/improvements/23.png";
 import improvement_icon_24 from "../Resources/images/improvements/24.png";
+import improvement_icon_25 from "../Resources/images/improvements/25.png";
+import improvement_icon_26 from "../Resources/images/improvements/26.png";
+import improvement_icon_27 from "../Resources/images/improvements/27.png";
 
 function Improvements() {
     const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
@@ -66,7 +69,10 @@ function Improvements() {
         improvement_icon_21,
         improvement_icon_22,
         improvement_icon_23,
-        improvement_icon_24
+        improvement_icon_24,
+        improvement_icon_25,
+        improvement_icon_26,
+        improvement_icon_27
     ];
 
     const { t, i18n } = useTranslation();
@@ -189,10 +195,23 @@ function Improvements() {
                                 </div>
                                 <div className="improve_container-row-item-main-rightSide">
                                     <span className="improve_container-row-item-main-rightSide-name">{translatedName(item)}</span>
-                                    <span className="improve_container-row-item-main-rightSide-description">{t('Profit per hour')}</span>
+                                    {item.id === 39 || item.id === 40 || item.id === 41 ?
+                                        <span className="improve_container-row-item-main-rightSide-description">{t('Moneys for referal')}</span>
+                                    :
+                                        <span className="improve_container-row-item-main-rightSide-description">{t('Profit per hour')}</span>
+                                    }
                                     <span className="improve_container-row-item-main-rightSide-coins">
-                                        <img src={coinImage} alt="" />
-                                        {item.coins_mining_now ? `${parseInt(item.coins_mining_now)} (+${parseInt(item.give_coins)})` : `+${parseInt(item.give_coins)}`}
+                                        {item.id === 39 || item.id === 40 || item.id === 41 ?
+                                            <>
+                                                + $0.01
+
+                                            </>
+                                        :
+                                            <>
+                                                <img src={coinImage} alt="" />
+                                                {item.coins_mining_now ? `${parseInt(item.coins_mining_now)} (+${parseInt(item.give_coins)})` : `+${parseInt(item.give_coins)}`}
+                                            </>
+                                        }
                                     </span>
                                 </div>
                             </div>
@@ -205,7 +224,11 @@ function Improvements() {
                                 <div className="improve_container-row-item-bottom-price">
                                     <span className="improve_container-row-item-bottom-price-text">
                                         <img src={coinImage} alt="" />
-                                        {parseInt(item.price)}
+                                        {item.id === 39 || item.id === 40 || item.id === 41 ?
+                                            parseInt(item.price / 1_000_000_000_000) + " " + t('trillion')
+                                        :
+                                            parseInt(item.price)
+                                        }
                                     </span>
                                 </div>
                             </div>

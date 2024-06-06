@@ -217,8 +217,8 @@ function Index() {
     let afterStyles = `
         .clicker::after{
             content: "";
-            width: 165px;
-            height: 165px;
+            width: 190px;
+            height: 190px;
             display: block;
             background-image: url(${skinImageId ? skins_images[skinImageId] : default_skin});
             background-repeat: no-repeat;
