@@ -44,10 +44,12 @@ import skin_25 from "../Resources/images/skins/25.png";
 import skin_26 from "../Resources/images/skins/26.png";
 import skin_27 from "../Resources/images/skins/27.png";
 
+import coinImage from "../Resources/images/coin.svg";
+
 import default_skin from "../Resources/images/human-free.png";
 
 function Index() {
-    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, userId, level, coinId, coinImageId, skinImageId } = useContext(GameContext);
+    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, userId, level, coinId, coinImageId, skinImageId, coinShadowColor } = useContext(GameContext);
     const [isClicked, setIsClicked] = useState(false);
     const [clicks, setClicks] = useState([]);
 
@@ -79,6 +81,7 @@ function Index() {
 
     useEffect(() => {
         console.log("coin image id is " + coinImageId)
+        console.log("skinImageId id is " + skinImageId)
 
         levels_score.forEach((level, i) => {
             if(parseFloat(levels_score[i][0]) <= parseFloat(totalEarn) && parseFloat(levels_score[i][1]) >= parseFloat(totalEarn)){
@@ -192,27 +195,27 @@ function Index() {
         skin_27,
     ];
 
-    const StyledClicker = styled.div`
-        width: 70vw;
-        height: 70vw;
-        margin: 0 auto;
-        outline: none;
-        border: none;
-        border-radius: 50%;
-        background-image: url(${"Resources/images/clicker-background-default.svg"});
-        background-position: center;
-        background-size: 102%;
-        box-shadow: 0px 0px 90px 0px #90a3b0;
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: ${isClicked ? '0px 0px 110px 0px #90a3b0' : undefined};
-        background-image: url(${coins_images[coinImageId]})
-    `;
+    // const StyledClicker = styled.div`
+    //     width: 70vw;
+    //     height: 70vw;
+    //     margin: 0 auto;
+    //     outline: none;
+    //     border: none;
+    //     border-radius: 50%;
+    //     background-image: url(${"Resources/images/clicker-background-default.svg"});
+    //     background-position: center;
+    //     background-size: 102%;
+    //     box-shadow: 0px 0px 90px 0px #90a3b0;
+    //     user-select: none;
+    //     -webkit-user-select: none;
+    //     -moz-user-select: none;
+    //     -ms-user-select: none;
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //     box-shadow: ${isClicked ? ('0px 0px 110px 0px ' + coinShadowColor) : ('0px 0px 90px 0px ' + coinShadowColor)};
+    //     background-image: url(${coins_images[coinImageId]})
+    // `;
 
     let afterStyles = `
         .clicker::after{
@@ -220,7 +223,7 @@ function Index() {
             width: 190px;
             height: 190px;
             display: block;
-            background-image: url(${skinImageId ? skins_images[skinImageId] : default_skin});
+            background-image: url(${!isNaN(skinImageId) ? skins_images[skinImageId] : default_skin});
             background-repeat: no-repeat;
             background-size: contain;
             background-position: center center;
@@ -240,16 +243,16 @@ function Index() {
 
                 {!isNaN(coinImageId) ?
                     <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={{
-                        boxShadow: isClicked ? '0px 0px 110px 0px #90a3b0' : undefined,
+                        boxShadow: isClicked ? ('0px 0px 110px 0px ' + coinShadowColor) : ('0px 0px 90px 0px ' + coinShadowColor),
                         backgroundImage: `url(${coins_images[coinImageId]})`
                     }}></div>
                 :
                     <div className={"clicker " + (energy >= coinsPerClick ? '' : 'disabled')} onTouchEnd={handleClick} style={
-                        isClicked ? {boxShadow: '0px 0px 110px 0px #90a3b0'} : {}
+                        isClicked ? {boxShadow: '0px 0px 110px 0px #AD5519'} : {}
                     }></div>
                 }
                 {clicks.map(({ id, x, y, coinsPerClickNow }) => (
-                    <div
+                    <div className="tap-value-with-coin-image"
                         key={id}
                         style={{
                             position: 'fixed',
@@ -263,6 +266,7 @@ function Index() {
                             fontSize: '28px'
                         }}
                     >
+                        <img src={coinImage} alt=""/>
                         {coinsPerClickNow}
                     </div>
                 ))}

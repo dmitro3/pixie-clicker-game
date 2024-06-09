@@ -13,7 +13,7 @@ import {useTranslation} from "react-i18next";
 import energyIcon from "../Resources/images/improvements/6.png";
 
 function Boosts() {
-    const { score, coinsPerClick, energy, maxEnergy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
+    const { score, coinsPerClick, energy, maxEnergy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId, skinPerTapBoost, energyBarBoost } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
     const [clickBoostPrice, setClickBoostPrice] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -123,7 +123,7 @@ function Boosts() {
                                     {parseInt(multitapPrice / 1000)}K
                                 </span>
                                 <span className="boosts_container-row-button-text-undername-lvl">
-                                    {coinsPerClick + 1} lvl
+                                    {coinsPerClick - skinPerTapBoost + 1} lvl
                                 </span>
                             </div>
                         </div>
@@ -138,7 +138,7 @@ function Boosts() {
                                     {parseInt(energyTotalPrice / 1000)}K
                                 </span>
                                 <span className="boosts_container-row-button-text-undername-lvl">
-                                    {(maxEnergy / 500) - 1} lvl
+                                    {parseInt((maxEnergy / 500) - 1)} lvl
                                 </span>
                             </div>
                         </div>

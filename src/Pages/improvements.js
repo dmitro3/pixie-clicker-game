@@ -37,9 +37,10 @@ import improvement_icon_24 from "../Resources/images/improvements/24.png";
 import improvement_icon_25 from "../Resources/images/improvements/25.png";
 import improvement_icon_26 from "../Resources/images/improvements/26.png";
 import improvement_icon_27 from "../Resources/images/improvements/27.png";
+import toast, {Toaster} from "react-hot-toast";
 
 function Improvements() {
-    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
+    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, skinId, userId, skinEarningBoost } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
     const [improvements, setImprovements] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -100,42 +101,15 @@ function Improvements() {
     }, []);
 
     function buyImprovement(id) {
-        improvements.forEach((item, i) => {
-            if (item['id'] === id) {
-                let playerNewImprovements = playerImprovements;
+        setIsLoaded(false);
 
-                if (playerNewImprovements['data'][item.id]) {
-                    playerNewImprovements['data'][item.id]['level'] += 1;
-                } else {
-                    playerNewImprovements['data'][item.id] = { "level": 2 };
-                }
-
-                updateGame({
-                    score: parseFloat(score) - parseFloat(item['price']),
-                    coinsPerSecond: coinsPerSecond + (parseFloat(item['give_coins'] / 60 / 60)),
-                    playerImprovements: playerNewImprovements
-                });
-
-                improvements[i]['price'] = improvements[i]['price'] * improvements[i]['price_coef'];
-                improvements[i]['give_coins'] = improvements[i]['give_coins'] * improvements[i]['give_coins_coef'];
-                improvements[i]['coins_mining_now'] = (improvements[i]['coins_mining_now'] || 0) + improvements[i]['give_coins'];
-            }
-        });
-
-        console.warn(playerImprovements);
-    }
-
-    useEffect(() => {
-        if(coinsPerSecond === 0){
-            return;
-        }
-
+        // setIsLoaded(false);
         let bodyData = {
-            "improvements": playerImprovements,
-            "coins_per_second": coinsPerSecond
+            "user_id":userId,
+            "improvement_id": id
         };
 
-        fetch(`https://game-api.pixie.fun/api/clicker/improvements/set/${userId}`, {
+        fetch(`https://game-api.pixie.fun/api/v2/clicker/improvements/set`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -143,10 +117,63 @@ function Improvements() {
             body: JSON.stringify(bodyData)
         }).then(response => response.json())
             .then(response => {
-                console.log(response);
+                if(response.message === 'ok'){
+                    console.log(improvements);
+                    console.log(response.improvements_data);
 
-                console.warn(playerImprovements);
+                    console.log(playerImprovements);
+                    improvements.forEach((item, i) => {
+                        if (item['id'] === id) {
+                            let playerNewImprovements = playerImprovements;
+
+                            if (playerNewImprovements['data'][item.id]) {
+                                playerNewImprovements['data'][item.id]['level'] += 1;
+                            } else {
+                                playerNewImprovements['data'][item.id] = { "level": 2 };
+                            }
+
+
+                            console.log(playerNewImprovements);
+                            if(skinId !== null){
+                                updateGame({
+                                    coinsPerSecond: parseFloat(response.coins_per_second) + (parseFloat(response.coins_per_second) / 100 * skinEarningBoost),
+                                    score: parseFloat(score) - parseFloat(response.price),
+                                    playerImprovements: playerNewImprovements
+                                });
+                            }else{
+                                updateGame({
+                                    coinsPerSecond: parseFloat(response.coins_per_second),
+                                    score: parseFloat(score) - parseFloat(response.price),
+                                    playerImprovements: playerNewImprovements
+                                });
+                            }
+
+
+                            improvements[i]['price'] = improvements[i]['price'] * improvements[i]['price_coef'];
+                            improvements[i]['give_coins'] = improvements[i]['give_coins'] * improvements[i]['give_coins_coef'];
+                            improvements[i]['coins_mining_now'] = (improvements[i]['coins_mining_now'] || 0) + improvements[i]['give_coins'];
+                        }
+                    });
+                    setIsLoaded(true);
+                    toast.success("Success!");
+
+                    console.log(playerImprovements);
+                }else{
+                    setIsLoaded(true);
+                    toast.error("Error :c");
+                }
+
             });
+
+
+        //
+        // console.warn(playerImprovements);
+    }
+
+    useEffect(() => {
+        if(coinsPerSecond === 0){
+            return;
+        }
     }, [coinsPerSecond]);
 
 
@@ -236,6 +263,8 @@ function Improvements() {
                     ))}
                 </div>
             </div>
+
+            <div><Toaster/></div>
         </div>
     );
 }

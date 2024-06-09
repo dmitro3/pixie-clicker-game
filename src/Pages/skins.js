@@ -39,6 +39,8 @@ import skin_25 from "../Resources/images/skins/25.png";
 import skin_26 from "../Resources/images/skins/26.png";
 import skin_27 from "../Resources/images/skins/27.png";
 
+import energyIcon from "../Resources/images/energy_icon.svg"
+
 function Skins() {
     const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId, skinId, skinImageId } = useContext(GameContext);
     const socket = useContext(WebSocketContext);
@@ -168,7 +170,7 @@ function Skins() {
             });
     }
 
-    function changeCoin(skin){
+    function changeSkin(skin){
         let data = {
             "skin_id":skin.id,
             "user_id":userId
@@ -188,6 +190,8 @@ function Skins() {
                         skinId:skin.id,
                         skinImageId:skin.image_id
                     });
+
+                    window.location.reload();
 
                 }else{
                     console.log("error")
@@ -210,7 +214,7 @@ function Skins() {
 
                 {viewPopup ?
                     <div className="offline_profit_container coins">
-                        <div className="offline_profit_container-content tasks">
+                        <div className="offline_profit_container-content tasks coins">
                             <button className="offline_profit_container-content-button-close" onClick={()=>{closePopup()}}>✕</button>
                             {/*<span className="offline_profit_container-content-text">{translatedName(setCurrentSkin())}</span>*/}
                             <img src={skins_images[currentSkin.image_id]} alt=""/>
@@ -218,6 +222,23 @@ function Skins() {
                                 <img src={coinImage} alt=""/>
                                 {currentSkin.price.toLocaleString()}
                             </span>
+                            <div className="coins_container-row-item-boosts-popup">
+                                <div className="coins_container-row-item-boosts-item">
+                                    <img src={coinImage} alt=""/>
+                                    Boost per tap
+                                    +{currentSkin.per_tap_boost}
+                                </div>
+                                <div className="coins_container-row-item-boosts-item">
+                                    <img src={energyIcon} alt=""/>
+                                    Energy bar boost
+                                    +{currentSkin.energy_bar_boost}%
+                                </div>
+                                <div className="coins_container-row-item-boosts-item">
+                                    <img src={coinImage} alt=""/>
+                                    Per hour boost
+                                    +{currentSkin.earning_boost}%
+                                </div>
+                            </div>
                             <div className="popup_tasks_buttons-bottom">
                                 <div className="popup_tasks_buttons">
                                     <button className="popup_tasks_buttons-button" onClick={()=> closePopup()}>{t('Close')}</button>
@@ -231,12 +252,26 @@ function Skins() {
 
                 <div className="coins_container-row">
                     {skins.map(skin => (
-                        <div className={"coins_container-row-item " + (skin.user_id ? 'buyed' : '') } onClick={() => clickCoinCard(skin)}>
+                        <div className={"coins_container-row-item " + (skin.user_id ? 'buyed' : '') } key-id={skin.id} onClick={() => clickCoinCard(skin)}>
+                            <div className="coins_container-row-item-boosts">
+                                <div className="coins_container-row-item-boosts-item">
+                                    <img src={coinImage} alt=""/>
+                                    +{skin.per_tap_boost}
+                                </div>
+                                <div className="coins_container-row-item-boosts-item">
+                                    <img src={energyIcon} alt=""/>
+                                    +{skin.energy_bar_boost}%
+                                </div>
+                                <div className="coins_container-row-item-boosts-item">
+                                    <img src={coinImage} alt=""/>
+                                    +{skin.earning_boost}%
+                                </div>
+                            </div>
                             <img src={skins_images[skin.image_id]} alt=""/>
                             {/*<span className="coins_container-row-item-name">{translatedName(skin)}</span>*/}
                             <span className="coins_container-row-item-price">
                                 {skin.user_id ?
-                                    skin.skin_id === skinId ? t('Selected') : <button className="coins-button-choose" onClick={() => changeCoin(skin)}>{t('Choose')}</button>
+                                    skin.skin_id === skinId ? t('Selected') : <button className="coins-button-choose" onClick={() => changeSkin(skin)}>{t('Choose')}</button>
                                     :
                                     <><img src={coinImage} alt=""/>{(skin.price).toLocaleString('en')}</>
                                 }

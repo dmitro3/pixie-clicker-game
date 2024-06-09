@@ -82,7 +82,7 @@ const Layout = () => {
     useEffect(() => {
         if(!userId){return;}
 
-        fetch(`https://game-api.pixie.fun/api/clicker/user/get/${userId}`)
+        fetch(`https://game-api.pixie.fun/api/v2/clicker/user/get/${userId}/${i18n.language}`)
             .then(response => response.json())
             .then(response => {
                 setFirstName(response.user.first_name);
@@ -123,19 +123,36 @@ const Layout = () => {
 
                 console.warn(JSON.parse(response.user.improvements_data))
                 console.log(response.user)
+
+                let maxEnergy = parseInt(response.user.max_energy);
+                let temp_coins_per_second = parseFloat(response.user.coins_per_second);
+                let temp_coins_per_click = parseFloat(response.user.coins_per_click);
+
+                if(response.user.skin_id !== null){
+                    console.log("есть бусты");
+                    maxEnergy = maxEnergy + (maxEnergy / 100 * parseInt(response.user.energy_bar_boost));
+                    temp_coins_per_second = temp_coins_per_second + (temp_coins_per_second / 100 * parseInt(response.user.earning_boost));
+                    temp_coins_per_click = temp_coins_per_click + parseFloat(response.user.per_tap_boost);
+                }
                 updateGame({
                     score: user_score,
-                    coinsPerClick: parseFloat(response.user.coins_per_click),
-                    coinsPerSecond: parseFloat(response.user.coins_per_second),
+                    coinsPerClick: parseFloat(temp_coins_per_click),
+                    coinsPerSecond: parseFloat(temp_coins_per_second),
                     playerImprovements: JSON.parse(response.user.improvements_data),
                     energy: parseInt(energy),
-                    maxEnergy: parseInt(response.user.max_energy),
+                    maxEnergy: parseInt(maxEnergy),
                     totalEarn: parseInt(total_earn),
                     coinImageId:parseInt(response.user.coin_image_id),
                     skinImageId:parseInt(response.user.skin_image_id),
                     coinId:parseInt(response.user.coin_id),
-                    skinId:parseInt(response.user.skin_id)
+                    skinId:parseInt(response.user.skin_id),
+                    coinShadowColor:response.user.coin_shadow_color,
+                    skinEarningBoost:response.user.earning_boost,
+                    skinPerTapBoost:response.user.per_tap_boost,
+                    energyBarBoost:response.user.energy_bar_boost
                 });
+
+                console.log(playerImprovements)
 
                 setLoaded(true);
             });
@@ -180,7 +197,7 @@ const Layout = () => {
         if (number >= 10000 && number < 1000000) {
             return `${parseInt(number / 1000)}k`
         } else if (number >= 1000000) {
-            return `${parseInt(number / 1000000)}kk`
+            return `${(number / 1000000).toFixed(3)}kk`
         } else {
             return `${parseInt(number)}`
         }
@@ -215,7 +232,12 @@ const Layout = () => {
     }
 
     if(attentionReloadPage) return <ReloadPage />;
-    if (!loaded || !playerImprovements || isNaN(score)) return <Loader />;
+    if (!loaded || isNaN(score)){
+        // console.log(loaded)
+        // console.log(playerImprovements)
+        // console.log(score)
+        return <Loader />
+    }
 
     return (
         <div className="app">

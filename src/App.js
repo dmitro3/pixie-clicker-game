@@ -55,8 +55,8 @@ function App() {
         if (platform === 'ios' || platform === 'android') {
             setIsTelegramWebApp(true);
         } else {
-            // setIsTelegramWebApp(true);
-            setIsTelegramWebApp(false);
+            setIsTelegramWebApp(true);
+            // setIsTelegramWebApp(false);
         }
     }, [platform]);
 

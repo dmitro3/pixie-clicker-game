@@ -53,6 +53,8 @@ import skin_27 from "../Resources/images/skins/27.png";
 function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [userInLeaderboard, setUserInLeaderboard] = useState(false);
+    const [curUser, setCuruser] = useState(null);
 
     const { userId, level } = useContext(GameContext);
 
@@ -77,6 +79,15 @@ function Leaderboard() {
             .then(response => response.json())
             .then(response => {
                 setLeaderboardData(response.users);
+                setCuruser(response.cur_user);
+
+                (response.users).forEach(item => {
+                    if(item.user_id === userId){
+                        setUserInLeaderboard(true);
+                    }
+                });
+
+                console.log("leaderboardData is " + userInLeaderboard)
                 setIsLoaded(true);
             });
     }, []);
@@ -164,6 +175,24 @@ function Leaderboard() {
                             </div>
                         </div>
                     ))}
+
+                    {userInLeaderboard ? '' :
+                        <div className={"leaderboard-list_item fixed current"}>
+                            <div className="leaderboard-list_item-avatar-container">
+                                <img src={curUser.current_skin_id ? skins_images[curUser.current_skin_id - 1] : default_skin} alt="avatar" className="leaderboard-list_item-avatar"/>
+                            </div>
+                            <div className="leaderboard-list_item-info">
+                                <span className="leaderboard-list_item-info-name">You</span>
+                                <span className="leaderboard-list_item-info-balance">
+                                    <img src={coinImage} alt="coin" className="leaderboard-list_item-info-balance-coin"/>
+                                    {parseInt(curUser.total_earn).toLocaleString('en')}
+                                </span>
+                            </div>
+                            <div className="leaderboard-list_item-rating">
+                                +50
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

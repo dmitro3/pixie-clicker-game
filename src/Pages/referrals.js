@@ -130,7 +130,6 @@ function Referrals() {
                 return acc;
             }, {}));
         }
-        setIsLoaded(true);
     }, [referralsData]);
 
     useEffect(() => {
@@ -141,6 +140,9 @@ function Referrals() {
         }else{
             setShareText("Play with be, become a studio boss and get tokens via airdrop! %0A\uD83D\uDCB8 +20k coins as a gift%0A\uD83D\uDD25 +50k coins, if you have Telegram Premium")
         }
+
+        setIsLoaded(false);
+
 
         fetch(`https://game-api.pixie.fun/api/clicker/referrals/get/${userId}`)
             .then(response => response.json())
@@ -216,6 +218,8 @@ function Referrals() {
                 setSumGetCoins(total_recieved_can_now);
                 setReferralsData(new_referrals);
                 setCountReferrals(response.referrals.length);
+
+                setIsLoaded(true);
             });
     }, []);
 

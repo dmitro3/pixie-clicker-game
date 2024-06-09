@@ -148,7 +148,8 @@ function Coins() {
                 if(response.message === "ok"){
                     updateGame({
                         coinId:coin.id,
-                        coinImageId:coin.image_id
+                        coinImageId:coin.image_id,
+                        coinShadowColor:coin.shadow_color
                     });
 
                 }else{

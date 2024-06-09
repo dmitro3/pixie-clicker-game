@@ -28,7 +28,10 @@ const GameProvider = ({ children }) => {
         coinId:null,
         skinId:null,
         coinImageId:null,
-        skinImageId:null
+        skinImageId:null,
+        skinEarningBoost:0,
+        skinPerTapBoost:0,
+        energyBarBoost:0
     });
 
     // useEffect(() => {
