@@ -29,6 +29,8 @@ const Layout = () => {
     const [loaded, setLoaded] = useState(false);
     const [attentionReloadPage, setAttentionReloadPage] = useState(false);
 
+    const [levelValue, setLevelValue] = useState(0);
+
     const [passiveProfitPopup, setPassiveProfitPopup] = useState(false);
     const [passiveProfitValue, setPassiveProfitValue] = useState(0);
     const [coinsNeedForNewLevel, setCoinsNeedForNewLevel] = useState(0);
@@ -73,7 +75,7 @@ const Layout = () => {
         levels_score.forEach((level, i) => {
             if(parseFloat(levels_score[i][0]) <= parseFloat(totalEarn) && parseFloat(levels_score[i][1]) >= parseFloat(totalEarn)){
                 // setLevelPercents(totalEarn / (levels_score[i][1] / 100));
-                // setLevelValue(i);
+                setLevelValue(i);
                 setCoinsNeedForNewLevel(parseInt(levels_score[i][1] - totalEarn));
             }
         });
@@ -149,7 +151,8 @@ const Layout = () => {
                     coinShadowColor:response.user.coin_shadow_color,
                     skinEarningBoost:response.user.earning_boost,
                     skinPerTapBoost:response.user.per_tap_boost,
-                    energyBarBoost:response.user.energy_bar_boost
+                    energyBarBoost:response.user.energy_bar_boost,
+                    level:levelValue
                 });
 
                 console.log(playerImprovements)
