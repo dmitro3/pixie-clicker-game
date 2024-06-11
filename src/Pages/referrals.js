@@ -143,8 +143,8 @@ function Referrals() {
 
         setIsLoaded(false);
 
-
-        fetch(`https://game-api.pixie.fun/api/clicker/referrals/get/${userId}`)
+        // fetch(`https://game-api.pixie.fun/api/clicker/referrals/get/${userId}`)
+        fetch(`http://game.pixie.loc/api/v2/clicker/referrals/get/${userId}`)
             .then(response => response.json())
             .then(response => {
                 let referrals = response.referrals;
