@@ -172,7 +172,7 @@ body{
   text-align: center;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 16px;
   font-family: "Pixel";
 
   user-select: none; /* Prevents text selection in most modern browsers */
@@ -810,6 +810,9 @@ body{
   color: #101615;
 
   border-radius: 2px;
+
+  text-decoration: none;
+  text-align: center;
 }
 .popup_tasks_buttons-bottom{
   width: 100%;
@@ -1050,6 +1053,7 @@ body{
   display: block;
   width: 45px;
   height: 45px;
+  border-radius: 6px;
 }
 .bottom_menu-item.tasks > img{
   animation: pulse1 1.5s linear infinite;
@@ -1157,6 +1161,30 @@ body{
 }
 .coins_container-row-item-boosts-popup > .coins_container-row-item-boosts-item:nth-child(2) > img{
   margin-right: 0;
+}
+.tasks-invite-friends-progress-bar-container{
+  padding: 0 20px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  align-items: center;
+}
+.tasks-invite-friends-progress-bar{
+  width: 100%;
+  background: #1D2222;
+  border-radius: 10px;
+  padding: 4px;
+  box-sizing: border-box;
+  height: 18px;
+  margin-top: 10px;
+}
+.tasks-invite-friends-progress-bar-value{
+  /*width: 44%;*/
+  background: #BBF245;
+  border-radius: 10px;
+  height: 10px;
 }
 
 

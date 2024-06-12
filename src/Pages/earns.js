@@ -13,6 +13,7 @@ import telegramIcon from "../Resources/images/tasks/telegram.svg";
 import xIcon from "../Resources/images/x-twitter.svg";
 import iconArrow from "../Resources/images/tasks/arrow.svg";
 import present_image from "../Resources/images/present.svg";
+import gorgon_icon from "../Resources/images/gorgon.jpg";
 
 function Earns() {
     const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
@@ -40,6 +41,7 @@ function Earns() {
         let language_code_is = WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code : 'ru';
 
         fetch(`https://game-api.pixie.fun/api/clicker/tasks/get/all/${userId}/${language_code_is}`)
+        // fetch(`http://game.pixie.loc/api/clicker/tasks/get/all/${userId}/${language_code_is}`)
             .then(response => response.json())
             .then(response => {
                 setTasks(response.tasks);
@@ -58,8 +60,14 @@ function Earns() {
     }
 
     function taskMore(task){
-        if(task.task_id){
-            return;
+        if([10, 11, 12].includes(task.id)){
+            if(task.was_completed){
+                return;
+            }
+        }else{
+            if(task.task_id){
+                return;
+            }
         }
 
         setCurrentTask(task);
@@ -75,6 +83,7 @@ function Earns() {
         };
 
         fetch('https://game-api.pixie.fun/api/clicker/tasks/check/complete/', {
+        // fetch('http://game.pixie.loc/api/clicker/tasks/check/complete', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -115,6 +124,17 @@ function Earns() {
         setTaskNotCompleted(false);
     }
 
+    function taskImage(id){
+        if(id === 8){
+            return <img src={xIcon} alt="" className="tasks_container-item-image"/>
+        }else if(id === 13){
+            return <img src={gorgon_icon} alt="" className="tasks_container-item-image"/>
+        }else{
+            return <img src={telegramIcon} alt="" className="tasks_container-item-image"/>
+        }
+
+    }
+
     if (!isLoaded) return <Loader />;
 
     return (
@@ -131,10 +151,27 @@ function Earns() {
                                 <img src={coinImage} alt=""/>
                                 {currentTask.coins.toLocaleString()}
                             </span>
+
+                            {[10,11,12].includes(currentTask.id) ?
+                                <div className="tasks-invite-friends-progress-bar-container">
+                                    <> ({currentTask.friends_invited === null ? 0 : currentTask.friends_invited} / {currentTask.friends_invite})</>
+                                    <div className="tasks-invite-friends-progress-bar">
+                                        <div className="tasks-invite-friends-progress-bar-value" style={{
+                                            width: (((currentTask.friends_invited === null ? 0 : currentTask.friends_invited) / currentTask.friends_invite * 100) > 100 ? 100 : ((currentTask.friends_invited === null ? 0 : currentTask.friends_invited) / currentTask.friends_invite * 100)) + "%"
+                                        }}>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            : '' }
                             <div className="popup_tasks_buttons-bottom">
                                 {taskNotCompleted ? <span className="popup_tasks_buttons-bottom-text">{t('Task not completed')}!</span> : ''}
                                 <div className="popup_tasks_buttons">
-                                    <button className="popup_tasks_buttons-button" onClick={()=>{locateToLink(currentTask.link)}}>{t('Subscribe')}</button>
+                                    {[10,11,12].includes(currentTask.id) ?
+                                        <a className="popup_tasks_buttons-button" href={"https://t.me/share/url?url=https://t.me/pixie_project_bot?start="+ userId +"&text=" + shareText}>{t('Invite')}</a>
+                                    :
+                                        <button className="popup_tasks_buttons-button" onClick={()=>{locateToLink(currentTask.link)}}>{t('Subscribe')}</button>
+                                    }
                                     <button className="popup_tasks_buttons-button second" onClick={()=>{checkRules(currentTask)}}>{t('Check')}</button>
                                 </div>
                             </div>
@@ -153,10 +190,16 @@ function Earns() {
                     </a>
 
                     {tasks.map((task) => (
-                        <button className={"tasks_container-item " + (task.task_id ? 'disabled' : '')} onClick={() => {taskMore(task)}}>
-                            <img src={task.task_id === 8 ? xIcon : telegramIcon} alt="" className="tasks_container-item-image"/>
+                        <button className={"tasks_container-item " + (
+                            ([10, 11, 12].includes(task.id) ? (task.was_completed ? 'disabled' : '') : (task.task_id ? 'disabled' : ''))
+                        )} onClick={() => {taskMore(task)}}>
+
+                            {taskImage(task.id)}
                             <div className="tasks_container-item-text">
-                                <span className="tasks_container-item-text-name">{translatedName(task)}</span>
+                                <span className="tasks_container-item-text-name">
+                                    {translatedName(task)}
+                                    {[10,11,12].includes(task.id) ? <> ({task.friends_invited === null ? 0 : task.friends_invited} / {task.friends_invite})</> : ''}
+                                </span>
                                 <span className="tasks_container-item-text-value">+{task.coins.toLocaleString('ru')}</span>
                             </div>
                             <img src={iconArrow} alt="" className="tasks_container-item-icon-row"/>

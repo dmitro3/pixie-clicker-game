@@ -95,6 +95,17 @@ const Layout = () => {
                 let energy = parseInt(response.user.current_energy);
                 let total_earn = parseInt(response.user.total_earn);
 
+                let maxEnergy = parseInt(response.user.max_energy);
+                let temp_coins_per_second = parseFloat(response.user.coins_per_second);
+                let temp_coins_per_click = parseFloat(response.user.coins_per_click);
+
+                if(response.user.skin_id !== null){
+                    console.log("есть бусты");
+                    maxEnergy = maxEnergy + (maxEnergy / 100 * parseInt(response.user.energy_bar_boost));
+                    temp_coins_per_second = temp_coins_per_second + (temp_coins_per_second / 100 * parseInt(response.user.earning_boost));
+                    temp_coins_per_click = temp_coins_per_click + parseFloat(response.user.per_tap_boost);
+                }
+
                 if (response.user.last_online_at) {
                     let last_online_at = (response.user.last_online_at).replace(/ /, 'T').replace(/ /, ':') + 'Z';
 
@@ -117,25 +128,12 @@ const Layout = () => {
                         user_score = user_score + passiveProfitValue;
                         total_earn = total_earn + parseFloat(differenceInSeconds) * parseFloat(response.user.coins_per_second);
                         energy = energy + parseInt(differenceInSeconds * 1);
-                        if (energy > parseInt(response.user.max_energy)) {
-                            energy = parseInt(response.user.max_energy);
+                        if (energy > parseInt(maxEnergy)) {
+                            energy = parseInt(maxEnergy);
                         }
                     }
                 }
 
-                console.warn(JSON.parse(response.user.improvements_data))
-                console.log(response.user)
-
-                let maxEnergy = parseInt(response.user.max_energy);
-                let temp_coins_per_second = parseFloat(response.user.coins_per_second);
-                let temp_coins_per_click = parseFloat(response.user.coins_per_click);
-
-                if(response.user.skin_id !== null){
-                    console.log("есть бусты");
-                    maxEnergy = maxEnergy + (maxEnergy / 100 * parseInt(response.user.energy_bar_boost));
-                    temp_coins_per_second = temp_coins_per_second + (temp_coins_per_second / 100 * parseInt(response.user.earning_boost));
-                    temp_coins_per_click = temp_coins_per_click + parseFloat(response.user.per_tap_boost);
-                }
                 updateGame({
                     score: user_score,
                     coinsPerClick: parseFloat(temp_coins_per_click),
