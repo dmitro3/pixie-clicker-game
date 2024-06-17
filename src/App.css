@@ -1546,6 +1546,16 @@ body{
   background: #bbf245;
   width: 100%;
 }
+.error-file-size{
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  text-align: center;
+  color: #cb0000;
+  font-size: 14px;
+  font-weight: bold;
+}
+
 
 @keyframes pulse1 {
   0% {

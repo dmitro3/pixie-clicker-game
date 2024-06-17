@@ -23,7 +23,7 @@ const GameProvider = ({ children }) => {
         energy:null,
         maxEnergy:null,
         totalEarn:null,
-        userId: (!isRunningInTelegram() && isLocalhost()) ? 875591451 : WebAppUser.initDataUnsafe.user.id,
+        userId: (!isRunningInTelegram() && isLocalhost()) ? 5655030541 : WebAppUser.initDataUnsafe.user.id,
         level:null,
         coinId:null,
         skinId:null,

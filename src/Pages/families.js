@@ -81,6 +81,7 @@ function Families() {
     const [name, setName] = useState(null);
     const [description, setDescription] = useState(null);
     const [isCreateLoader, setIsCreateLoader] = useState(false);
+    const [errorFileSize, setErrorFileSize] = useState("");
 
     const { userId, level, family_id, updateGame, score } = useContext(GameContext);
 
@@ -133,6 +134,16 @@ function Families() {
         }
 
         if(score < 100000000){
+            return false;
+        }
+
+        // Проверка, если файл существует и его размер превышает 2MB
+        if (file && file.size > (2097152 / 2)) {
+            setErrorFileSize("File size should not exceed 1MB")
+
+            setTimeout(function(){
+                setErrorFileSize("");
+            }, 3000);
             return false;
         }
 
@@ -347,6 +358,8 @@ function Families() {
                                         <img src={coinImage} alt=""/>
                                         100,000,000
                                     </div>
+
+                                    <p className="error-file-size">{errorFileSize}</p>
 
                                     <button className={"family-popup-content-create " + ((score < 100000000 ? 'disabled' : ''))} onClick={handleSubmit}>Create</button>
                                 </>
