@@ -79,7 +79,7 @@ function Improvements() {
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
-        fetch(`https://game-api.pixie.fun/api/clicker/improvements/get`)
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/improvements/get`)
             .then(response => response.json())
             .then(response => {
                 let improvements = response.improvements;
@@ -100,16 +100,20 @@ function Improvements() {
             });
     }, []);
 
-    function buyImprovement(id) {
+    function buyImprovement(improvement_item) {
         setIsLoaded(false);
 
         // setIsLoaded(false);
         let bodyData = {
             "user_id":userId,
-            "improvement_id": id
+            "improvement_id": improvement_item.id
         };
 
-        fetch(`https://game-api.pixie.fun/api/v2/clicker/improvements/set`, {
+        updateGame({
+            score: parseFloat(score) - parseFloat(improvement_item.price),
+        });
+
+        fetch(`${process.env.REACT_APP_API_URL}/v2/clicker/improvements/set`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -123,7 +127,7 @@ function Improvements() {
 
                     console.log(playerImprovements);
                     improvements.forEach((item, i) => {
-                        if (item['id'] === id) {
+                        if (item['id'] === improvement_item.id) {
                             let playerNewImprovements = playerImprovements;
 
                             if (playerNewImprovements['data'][item.id]) {
@@ -137,13 +141,11 @@ function Improvements() {
                             if(skinId !== null){
                                 updateGame({
                                     coinsPerSecond: parseFloat(response.coins_per_second) + (parseFloat(response.coins_per_second) / 100 * skinEarningBoost),
-                                    score: parseFloat(score) - parseFloat(response.price),
                                     playerImprovements: playerNewImprovements
                                 });
                             }else{
                                 updateGame({
                                     coinsPerSecond: parseFloat(response.coins_per_second),
-                                    score: parseFloat(score) - parseFloat(response.price),
                                     playerImprovements: playerNewImprovements
                                 });
                             }
@@ -161,6 +163,9 @@ function Improvements() {
                 }else{
                     setIsLoaded(true);
                     toast.error("Error :c");
+                    updateGame({
+                        score: parseFloat(score) + parseFloat(improvement_item.price),
+                    });
                 }
 
             });
@@ -214,7 +219,7 @@ function Improvements() {
 
                 <div className="improve_container-row">
                     {improvements.map(item => (
-                        <div key={item.id} className={"improve_container-row-item " + (parseInt(item.price) > parseInt(score) ? "disabled" : "")} onClick={() => { if (parseInt(item.price) < parseInt(score)) { buyImprovement(item.id) } }}>
+                        <div key={item.id} className={"improve_container-row-item " + (parseInt(item.price) > parseInt(score) ? "disabled" : "")} onClick={() => { if (parseInt(item.price) < parseInt(score)) { buyImprovement(item) } }}>
                             <div className="improve_container-row-item-main">
                                 <div className="improve_container-row-item-main-leftSide">
                                     {/*<img src={rocketImage} alt="" />*/}

@@ -59,7 +59,7 @@ function Boosts() {
             score: score - multitapPrice
         });
 
-        fetch("https://game-api.pixie.fun/api/clicker/boosts/multitap/buy",{
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/boosts/multitap/buy`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -93,7 +93,7 @@ function Boosts() {
             score: score - energyTotalPrice
         });
 
-        fetch("https://game-api.pixie.fun/api/clicker/boosts/energytotal/buy",{
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/boosts/energytotal/buy`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'

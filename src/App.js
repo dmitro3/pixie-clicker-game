@@ -16,6 +16,7 @@ import Earns from "./Pages/earns";
 import Coinsskins from "./Pages/coins";
 import Coins from "./Pages/coins";
 import Skins from "./Pages/skins";
+import Families from "./Pages/families";
 
 function App() {
     const [isTelegramWebApp, setIsTelegramWebApp] = useState(false);
@@ -24,6 +25,9 @@ function App() {
     useEffect(() => {
         WebApp.ready();
         WebApp.expand();
+        // WebApp.EnableClosingConfirmation();
+
+        // EnableClosingConfirmation
 
         if (WebAppUser.platform) {
             setPlatform(WebAppUser.platform);
@@ -75,6 +79,7 @@ function App() {
                                 <Route path="/earns" element={<Earns/>}/>
                                 <Route path="/coins" element={<Coins/>}/>
                                 <Route path="/skins" element={<Skins/>}/>
+                                <Route path="/families" element={<Families/>}/>
                             </Route>
                         </Routes>
                     </Router>

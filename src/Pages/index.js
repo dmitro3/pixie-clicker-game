@@ -235,7 +235,10 @@ function Index() {
             <style>{afterStyles}</style>
             <div>
                 <div className="level-content">
-                    <span className="level-content-value">Level: {levelValue}</span>
+                    <div className="level-content-level">
+                        <span className="level-content-value">Level: {levelValue}</span>
+                        <NavLink to="/leaderboard" className="level-content-leaderboard">Leaderboard ></NavLink>
+                    </div>
                     <div className="level-line-container">
                         <div className="level-line" style={{width:levelPercents + '%'}}></div>
                     </div>

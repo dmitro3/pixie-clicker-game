@@ -14,6 +14,9 @@ import xIcon from "../Resources/images/x-twitter.svg";
 import iconArrow from "../Resources/images/tasks/arrow.svg";
 import present_image from "../Resources/images/present.svg";
 import gorgon_icon from "../Resources/images/gorgon.jpg";
+import hexn_icon from "../Resources/images/tasks/hexn.png";
+import cryptowolf_icon from "../Resources/images/tasks/cryptowolf.jpg";
+
 
 function Earns() {
     const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
@@ -40,7 +43,7 @@ function Earns() {
 
         let language_code_is = WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code : 'ru';
 
-        fetch(`https://game-api.pixie.fun/api/clicker/tasks/get/all/${userId}/${language_code_is}`)
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/tasks/get/all/${userId}/${language_code_is}`)
         // fetch(`http://game.pixie.loc/api/clicker/tasks/get/all/${userId}/${language_code_is}`)
             .then(response => response.json())
             .then(response => {
@@ -82,7 +85,7 @@ function Earns() {
             "task_id":task.id
         };
 
-        fetch('https://game-api.pixie.fun/api/clicker/tasks/check/complete/', {
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/tasks/check/complete/`, {
         // fetch('http://game.pixie.loc/api/clicker/tasks/check/complete', {
             method: 'POST',
             headers: {
@@ -103,7 +106,7 @@ function Earns() {
                    setIsLoaded(false);
 
                    let language_code_is = WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code : 'ru';
-                   fetch(`https://game-api.pixie.fun/api/clicker/tasks/get/all/${userId}/${language_code_is}`)
+                   fetch(`${process.env.REACT_APP_API_URL}/clicker/tasks/get/all/${userId}/${language_code_is}`)
                        .then(response => response.json())
                        .then(response => {
                            setTasks(response.tasks);
@@ -129,6 +132,12 @@ function Earns() {
             return <img src={xIcon} alt="" className="tasks_container-item-image"/>
         }else if(id === 13){
             return <img src={gorgon_icon} alt="" className="tasks_container-item-image"/>
+        }else if(id === 14){
+            return <img src={hexn_icon} alt="" className="tasks_container-item-image"/>
+        }else if(id === 15){
+            return <img src={coinImage} alt="" className="tasks_container-item-image"/>
+        }else if(id === 16){
+            return <img src={cryptowolf_icon} alt="" className="tasks_container-item-image"/>
         }else{
             return <img src={telegramIcon} alt="" className="tasks_container-item-image"/>
         }
@@ -167,12 +176,22 @@ function Earns() {
                             <div className="popup_tasks_buttons-bottom">
                                 {taskNotCompleted ? <span className="popup_tasks_buttons-bottom-text">{t('Task not completed')}!</span> : ''}
                                 <div className="popup_tasks_buttons">
-                                    {[10,11,12].includes(currentTask.id) ?
-                                        <a className="popup_tasks_buttons-button" href={"https://t.me/share/url?url=https://t.me/pixie_project_bot?start="+ userId +"&text=" + shareText}>{t('Invite')}</a>
-                                    :
-                                        <button className="popup_tasks_buttons-button" onClick={()=>{locateToLink(currentTask.link)}}>{t('Subscribe')}</button>
+                                    {currentTask.id !== 15 ?
+                                        <>
+                                            {[10,11,12].includes(currentTask.id) ?
+                                                <a className="popup_tasks_buttons-button" href={"https://t.me/share/url?url=https://t.me/pixie_project_bot?start="+ userId +"&text=" + shareText}>{t('Invite')}</a>
+                                                :
+                                                <button className="popup_tasks_buttons-button" onClick={()=>{locateToLink(currentTask.link)}}>{t('Subscribe')}</button>
+                                            }
+                                        </>
+                                        :
+                                        ''
                                     }
-                                    <button className="popup_tasks_buttons-button second" onClick={()=>{checkRules(currentTask)}}>{t('Check')}</button>
+                                    {currentTask.id === 15 ?
+                                        <button className="popup_tasks_buttons-button" onClick={()=>{checkRules(currentTask)}}>{t('Get')}</button>
+                                    :
+                                        <button className="popup_tasks_buttons-button second" onClick={()=>{checkRules(currentTask)}}>{t('Check')}</button>
+                                    }
                                 </div>
                             </div>
                         </div>

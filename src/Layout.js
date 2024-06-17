@@ -84,7 +84,14 @@ const Layout = () => {
     useEffect(() => {
         if(!userId){return;}
 
-        fetch(`https://game-api.pixie.fun/api/v2/clicker/user/get/${userId}/${i18n.language}`)
+        let user_language = "";
+        if(WebAppUser.initDataUnsafe && WebAppUser.initDataUnsafe.user){
+            user_language = WebAppUser.initDataUnsafe.user.language_code;
+        }else{
+            user_language = "ru";
+        }
+
+        fetch(`${process.env.REACT_APP_API_URL}/v2/clicker/user/get/${userId}/${user_language}`)
             .then(response => response.json())
             .then(response => {
                 setFirstName(response.user.first_name);
@@ -108,6 +115,7 @@ const Layout = () => {
 
                 if (response.user.last_online_at) {
                     let last_online_at = (response.user.last_online_at).replace(/ /, 'T').replace(/ /, ':') + 'Z';
+                    let last_auth_at = (response.user.last_auth_date).replace(/ /, 'T').replace(/ /, ':') + 'Z';
 
                     let dateNowObj = new Date(response.user.date_now);
                     let lastOnlineAtObj = new Date(last_online_at);
@@ -115,7 +123,12 @@ const Layout = () => {
                     let differenceInSeconds = Math.round(difference / 1000);
                     let differenceInMinutes = parseInt(differenceInSeconds / 60);
 
-                    if (differenceInMinutes > 1) {
+                    let lastAuthAtObj = new Date(last_auth_at);
+                    let diff_last_auth = dateNowObj - lastOnlineAtObj;
+                    let diff_last_auth_sec = Math.round(diff_last_auth / 1000);
+                    let diff_last_auth_min = Math.round(diff_last_auth_sec / 60);
+
+                    if (differenceInMinutes > 1 && diff_last_auth_min > 1) {
                         setPassiveProfitPopup(true);
 
                         if (differenceInSeconds > (60 * 60 * 3)) {
@@ -150,7 +163,8 @@ const Layout = () => {
                     skinEarningBoost:response.user.earning_boost,
                     skinPerTapBoost:response.user.per_tap_boost,
                     energyBarBoost:response.user.energy_bar_boost,
-                    level:levelValue
+                    level:levelValue,
+                    family_id:response.user.family_id ? parseInt(response.user.family_id) : null
                 });
 
                 console.log(playerImprovements)

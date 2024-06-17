@@ -143,7 +143,7 @@ function Referrals() {
 
         setIsLoaded(false);
 
-        fetch(`https://game-api.pixie.fun/api/clicker/referrals/get/${userId}`)
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/referrals/get/${userId}`)
         // fetch(`http://game.pixie.loc/api/v2/clicker/referrals/get/${userId}`)
             .then(response => response.json())
             .then(response => {
@@ -259,7 +259,7 @@ function Referrals() {
             totalEarn: parseFloat(totalEarn) + parseFloat(sumGetCoins)
         });
 
-        fetch("https://game-api.pixie.fun/api/clicker/v2/referrals/get/coins", {
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/v2/referrals/get/coins`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -268,7 +268,7 @@ function Referrals() {
         }).then(response => response.json())
             .then(response => {
                 console.log(response);
-                fetch(`https://game-api.pixie.fun/api/clicker/referrals/get/${userId}`)
+                fetch(`${process.env.REACT_APP_API_URL}/clicker/referrals/get/${userId}`)
                     .then(response => response.json())
                     .then(response => {
                         let referrals = response.referrals;

@@ -6,7 +6,7 @@ export const WebSocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const ws = new WebSocket("wss://game-api.pixie.fun:8080");
+        const ws = new WebSocket("wss://api.pixie-game.com/ws/");
 
         ws.onopen = () => {
             console.log("WebSocket соединение установлено");

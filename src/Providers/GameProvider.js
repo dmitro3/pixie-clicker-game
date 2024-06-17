@@ -31,7 +31,8 @@ const GameProvider = ({ children }) => {
         skinImageId:null,
         skinEarningBoost:0,
         skinPerTapBoost:0,
-        energyBarBoost:0
+        energyBarBoost:0,
+        family_id:null,
     });
 
     // useEffect(() => {

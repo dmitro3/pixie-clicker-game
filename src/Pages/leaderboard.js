@@ -75,7 +75,7 @@ function Leaderboard() {
 
     useEffect(() => {
         // fetch(`https://game-api.pixie.fun/api/clicker/leaderboard/get`)
-        fetch(`https://game-api.pixie.fun/api/clicker/leaderboard/level/${userId}/get`)
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/leaderboard/level/${userId}/get`)
             .then(response => response.json())
             .then(response => {
                 setLeaderboardData(response.users);

@@ -43,7 +43,7 @@ function Coins() {
 
     useEffect(() => {
         console.log("coinId is " + coinId)
-        fetch(`https://game-api.pixie.fun/api/clicker/coins/get/all/${userId}`)
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/coins/get/all/${userId}`)
             .then(response => response.json())
             .then(response => {
                 let coins = response.coins;
@@ -101,7 +101,11 @@ function Coins() {
             "user_id":userId
         };
 
-        fetch(`https://game-api.pixie.fun/api/clicker/coins/buy`,{
+        updateGame({
+            score: score - parseFloat(currentCoin.price)
+        })
+
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/coins/buy`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -110,13 +114,10 @@ function Coins() {
         }).then(response => response.json())
             .then(response => {
                 if(response.message === "ok"){
-                    updateGame({
-                        score: score - parseFloat(currentCoin.price)
-                    })
                     setViewPopup(false);
                     setCurrentCoin(null);
 
-                    fetch(`https://game-api.pixie.fun/api/clicker/coins/get/all/${userId}`)
+                    fetch(`${process.env.REACT_APP_API_URL}/clicker/coins/get/all/${userId}`)
                         .then(response => response.json())
                         .then(response => {
                             let coins = response.coins;
@@ -125,7 +126,9 @@ function Coins() {
                             setIsLoaded(true);
                         });
                 }else{
-
+                    updateGame({
+                        score: score + parseFloat(currentCoin.price)
+                    })
                 }
             });
     }
@@ -136,7 +139,7 @@ function Coins() {
             "user_id":userId
         };
 
-        fetch(`https://game-api.pixie.fun/api/clicker/coins/set`,{
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/coins/set`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'

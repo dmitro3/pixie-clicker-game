@@ -84,7 +84,7 @@ function Skins() {
 
     useEffect(() => {
         console.log("skinId is " + skinId)
-        fetch(`https://game-api.pixie.fun/api/clicker/skins/get/all/${userId}`)
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/skins/get/all/${userId}`)
             .then(response => response.json())
             .then(response => {
                 let skins = response.skins;
@@ -141,7 +141,11 @@ function Skins() {
             "user_id":userId
         };
 
-        fetch(`https://game-api.pixie.fun/api/clicker/skins/buy`,{
+        updateGame({
+            score: score - parseFloat(currentSkin.price)
+        })
+
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/skins/buy`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -150,13 +154,10 @@ function Skins() {
         }).then(response => response.json())
             .then(response => {
                 if(response.message === "ok"){
-                    updateGame({
-                        score: score - parseFloat(currentSkin.price)
-                    })
                     setViewPopup(false);
                     setCurrentSkin(null);
 
-                    fetch(`https://game-api.pixie.fun/api/clicker/skins/get/all/${userId}`)
+                    fetch(`${process.env.REACT_APP_API_URL}/clicker/skins/get/all/${userId}`)
                         .then(response => response.json())
                         .then(response => {
                             let skins = response.skins;
@@ -165,7 +166,9 @@ function Skins() {
                             setIsLoaded(true);
                         });
                 }else{
-
+                    updateGame({
+                        score: score + parseFloat(currentSkin.price)
+                    })
                 }
             });
     }
@@ -176,7 +179,7 @@ function Skins() {
             "user_id":userId
         };
 
-        fetch(`https://game-api.pixie.fun/api/clicker/skins/set`,{
+        fetch(`${process.env.REACT_APP_API_URL}/clicker/skins/set`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
