@@ -138,7 +138,7 @@ function Referrals() {
         }else if(i18n.language === 'uk'){
             setShareText("Грай зі мною, стань босом студії та отримай токени через ейрдроп!%0A\uD83D\uDCB8 +20k монет у якості подарунка%0A\uD83D\uDD25 +50k монет, якщо у тебе Telegram Premium")
         }else{
-            setShareText("Play with be, become a studio boss and get tokens via airdrop! %0A\uD83D\uDCB8 +20k coins as a gift%0A\uD83D\uDD25 +50k coins, if you have Telegram Premium")
+            setShareText("Play with me, become a studio boss and get tokens via airdrop! %0A\uD83D\uDCB8 +20k coins as a gift%0A\uD83D\uDD25 +50k coins, if you have Telegram Premium")
         }
 
         setIsLoaded(false);

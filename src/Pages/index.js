@@ -289,10 +289,6 @@ function Index() {
                 {userId === 875591451 ?
                     <span className="admin-text">{WebAppUser.initDataUnsafe && WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code
                 : ''}</span> : ''}
-
-                {userId === 463600889 ?
-                    <span className="admin-text">{WebAppUser.initDataUnsafe && WebAppUser.initDataUnsafe.user ? WebAppUser.initDataUnsafe.user.language_code
-                : ''}</span> : ''}
             </div>
         </div>
     );

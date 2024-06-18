@@ -42,6 +42,10 @@ function App() {
                 i18n.changeLanguage("ru");
             }else if(WebAppUser.initDataUnsafe.user.language_code === 'uk'){
                 i18n.changeLanguage("uk");
+            }else if(WebAppUser.initDataUnsafe.user.language_code === 'fa'){
+                i18n.changeLanguage("fa");
+            }else if(WebAppUser.initDataUnsafe.user.language_code === 'fr'){
+                i18n.changeLanguage("fr");
             }else{
                 i18n.changeLanguage("en");
             }
@@ -53,14 +57,14 @@ function App() {
                 i18n.changeLanguage("uk");
             }
         }else{
-            i18n.changeLanguage("ru");
+            i18n.changeLanguage("fa");
         }
 
         if (platform === 'ios' || platform === 'android') {
             setIsTelegramWebApp(true);
         } else {
-            // setIsTelegramWebApp(true);
-            setIsTelegramWebApp(false);
+            setIsTelegramWebApp(true);
+            // setIsTelegramWebApp(false);
         }
     }, [platform]);
 
