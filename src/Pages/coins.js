@@ -5,7 +5,6 @@ import avatarImage from "../Resources/images/avatar.jpg";
 import coinImage from "../Resources/images/coin.svg";
 import rocketImage from "../Resources/images/rocket.svg";
 import GameContext from "../Context/GameContext";
-import WebSocketContext from "../Context/WebSocketContext";
 import Loader from "../Components/Loader";
 import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
@@ -19,8 +18,8 @@ import goldenCoin1 from "../Resources/images/coins/gold-1.svg";
 import goldenCoin2 from "../Resources/images/coins/gold-2.svg";
 
 function Coins() {
-    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId, coinId, coinImageId } = useContext(GameContext);
-    const socket = useContext(WebSocketContext);
+    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, token, userId, coinId, coinImageId } = useContext(GameContext);
+
     const [coins, setCoins] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [viewPopup, setViewPopup] = useState(false);
@@ -53,19 +52,6 @@ function Coins() {
             });
     }, []);
 
-
-    useEffect(() => {
-        if (socket && !isNaN(score) && score !== null && totalEarn !== null && !isNaN(totalEarn)) {
-            const socket_data = JSON.stringify({
-                "Score": parseFloat(score),
-                "TelegramId": parseInt(userId),
-                "Energy": parseInt(energy),
-                "TotalEarn": parseFloat(totalEarn)
-            });
-            socket.send(socket_data);
-        }
-    }, [score, socket, userId, energy, totalEarn]);
-
     function translatedName(item){
         if(i18n.language === 'ru'){
             return item.name_ru;
@@ -95,24 +81,27 @@ function Coins() {
             return;
         }
 
+        let date_now_obj = new Date();
+        let date_now_timestamp = date_now_obj.getTime();
+        date_now_timestamp = parseInt(date_now_timestamp) / 1000;
+        date_now_timestamp = parseInt(date_now_timestamp);
+
         setIsLoaded(false);
         let data = {
             "coin_id":currentCoin.id,
-            "user_id":userId
+            "timestamp":date_now_timestamp
         };
 
-        updateGame({
-            score: score - parseFloat(currentCoin.price)
-        })
-
-        fetch(`${process.env.REACT_APP_API_URL}/clicker/coins/buy`,{
+        fetch(`${process.env.REACT_APP_API_URL}/v2/coins/buy`,{
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'auth-api-token': token
             },
             body: JSON.stringify(data)
         }).then(response => response.json())
             .then(response => {
+                console.log(response)
                 if(response.message === "ok"){
                     setViewPopup(false);
                     setCurrentCoin(null);
@@ -125,24 +114,31 @@ function Coins() {
 
                             setIsLoaded(true);
                         });
-                }else{
-                    updateGame({
-                        score: score + parseFloat(currentCoin.price)
-                    })
                 }
+
+                updateGame({
+                    score: parseFloat(response.balance)
+                })
             });
     }
 
     function changeCoin(coin){
+        let date_now_obj = new Date();
+        let date_now_timestamp = date_now_obj.getTime();
+        date_now_timestamp = parseInt(date_now_timestamp) / 1000;
+        date_now_timestamp = parseInt(date_now_timestamp);
+
         let data = {
             "coin_id":coin.id,
-            "user_id":userId
+            "timestamp":date_now_timestamp
         };
 
-        fetch(`${process.env.REACT_APP_API_URL}/clicker/coins/set`,{
+
+        fetch(`${process.env.REACT_APP_API_URL}/v2/coins/set`,{
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'auth-api-token': token
             },
             body: JSON.stringify(data)
         })
@@ -152,12 +148,13 @@ function Coins() {
                     updateGame({
                         coinId:coin.id,
                         coinImageId:coin.image_id,
-                        coinShadowColor:coin.shadow_color
+                        coinShadowColor:coin.shadow_color,
                     });
-
-                }else{
-                    console.log("error")
                 }
+
+                updateGame({
+                    score: parseFloat(response.balance)
+                })
             });
     }
 

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
-import WebSocketContext from "./Context/WebSocketContext";
 import BottomMenu from './Components/BottomMenu';
 import coinImage from "./Resources/images/coin.svg";
 import GameContext from "./Context/GameContext";
@@ -22,7 +21,7 @@ import pixie_9 from "./Resources/images/pixie/9.png";
 
 const Layout = () => {
     const { score, coinsPerClick, coinsPerSecond, playerImprovements, energy, totalEarn, maxEnergy, updateGame, userId } = useContext(GameContext);
-    const socket = useContext(WebSocketContext);
+
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
     const [username, setUsername] = useState(null);
@@ -113,40 +112,15 @@ const Layout = () => {
                     temp_coins_per_click = temp_coins_per_click + parseFloat(response.user.per_tap_boost);
                 }
 
-                if (response.user.passive_coins_time_seconds > 0) {
-                    // let last_online_at = (response.user.last_online_at).replace(/ /, 'T').replace(/ /, ':') + 'Z';
-                    // let last_auth_at = (response.user.last_auth_date).replace(/ /, 'T').replace(/ /, ':') + 'Z';
-                    //
-                    // let dateNowObj = new Date(response.user.date_now);
-                    // let lastOnlineAtObj = new Date(last_online_at);
-                    // let difference = dateNowObj - lastOnlineAtObj;
-                    // let differenceInSeconds = Math.round(difference / 1000);
-                    // console.log("Разница в секундах: ")
-                    // console.log(differenceInSeconds)
-                    // let differenceInMinutes = parseInt(differenceInSeconds / 60);
-                    //
-                    // let lastAuthAtObj = new Date(last_auth_at);
-                    // let diff_last_auth = dateNowObj - lastOnlineAtObj;
-                    // let diff_last_auth_sec = Math.round(diff_last_auth / 1000);
-                    // let diff_last_auth_min = Math.round(diff_last_auth_sec / 60);
 
-                    // if (differenceInMinutes > 1 && diff_last_auth_min > 1) {
-                    setPassiveProfitPopup(true);
+                setPassiveProfitPopup(true);
 
-                    // if (differenceInSeconds > (60 * 60 * 3)) {
-                    //     differenceInSeconds = 60 * 60 * 3;
-                    // }
+                let passiveProfitValue = parseFloat(response.user.balance) - parseFloat(response.user.old_balance);
 
-                    let passiveProfitValue = parseFloat(response.user.passive_coins_time_seconds) * parseFloat(response.user.coins_per_second);
-                    setPassiveProfitValue(passiveProfitValue);
-                    user_score = user_score + passiveProfitValue;
-                    total_earn = total_earn + parseFloat(response.user.passive_coins_time_seconds) * parseFloat(response.user.coins_per_second);
-                    energy = energy + parseInt(response.user.passive_coins_time_seconds * 1);
-                    if (energy > parseInt(maxEnergy)) {
-                        energy = parseInt(maxEnergy);
-                    }
-                    // }
-                }
+                setPassiveProfitValue(passiveProfitValue);
+                user_score = parseFloat(response.user.balance);
+                total_earn = parseFloat(total_earn) + (parseFloat(response.user.balance) - parseFloat(response.user.old_balance));
+                energy = response.user.current_energy;
 
                 updateGame({
                     score: user_score,
@@ -187,28 +161,6 @@ const Layout = () => {
 
         return () => clearInterval(interval);
     }, [coinsPerSecond]);
-
-    useEffect(() => {
-        if (socket) {
-            console.log("socket-соединение установлено")
-
-            socket.onclose = () => {
-                console.log("socket-соединение закрыто")
-                setAttentionReloadPage(true);
-            };
-        }
-
-        if (socket && !isNaN(score) && score !== null && totalEarn !== null && !isNaN(totalEarn)) {
-            const socket_data = JSON.stringify({
-                "Score": parseFloat(score),
-                "TelegramId": parseInt(userId),
-                // "Energy": parseInt(energy),
-                "TotalEarn": parseFloat(totalEarn)
-            });
-
-            socket.send(socket_data);
-        }
-    }, [score, socket, userId, energy, totalEarn]);
 
     function parseBigNumber(number) {
         if (number >= 10000 && number < 1000000) {

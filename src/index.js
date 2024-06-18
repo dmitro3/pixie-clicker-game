@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GameProvider from "./Providers/GameProvider";
-import { WebSocketProvider } from "./Context/WebSocketContext";
 import {I18nextProvider} from "react-i18next";
 import i18n from './i18n';
 
@@ -13,9 +12,7 @@ root.render(
   <React.StrictMode>
       <I18nextProvider i18n={i18n}>
           <GameProvider>
-              <WebSocketProvider>
-                  <App />
-              </WebSocketProvider>
+              <App />
           </GameProvider>
       </I18nextProvider>
 

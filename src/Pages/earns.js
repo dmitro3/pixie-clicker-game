@@ -5,7 +5,6 @@ import avatarImage from "../Resources/images/avatar.jpg";
 import coinImage from "../Resources/images/coin.svg";
 import rocketImage from "../Resources/images/rocket.svg";
 import GameContext from "../Context/GameContext";
-import WebSocketContext from "../Context/WebSocketContext";
 import Loader from "../Components/Loader";
 import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
@@ -20,7 +19,6 @@ import cryptowolf_icon from "../Resources/images/tasks/cryptowolf.jpg";
 
 function Earns() {
     const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
-    const socket = useContext(WebSocketContext);
     const [clickBoostPrice, setClickBoostPrice] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 

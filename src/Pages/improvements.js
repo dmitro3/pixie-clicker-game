@@ -5,7 +5,6 @@ import avatarImage from "../Resources/images/avatar.jpg";
 import coinImage from "../Resources/images/coin.svg";
 import rocketImage from "../Resources/images/rocket.svg";
 import GameContext from "../Context/GameContext";
-import WebSocketContext from "../Context/WebSocketContext";
 import Loader from "../Components/Loader";
 import WebAppUser from "@twa-dev/sdk";
 import {useTranslation} from "react-i18next";
@@ -40,8 +39,8 @@ import improvement_icon_27 from "../Resources/images/improvements/27.png";
 import toast, {Toaster} from "react-hot-toast";
 
 function Improvements() {
-    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, skinId, userId, skinEarningBoost } = useContext(GameContext);
-    const socket = useContext(WebSocketContext);
+    const { score, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, skinId, token, userId, skinEarningBoost } = useContext(GameContext);
+
     const [improvements, setImprovements] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -103,25 +102,26 @@ function Improvements() {
     function buyImprovement(improvement_item) {
         setIsLoaded(false);
 
-        // setIsLoaded(false);
+        let date_now_obj = new Date();
+        let date_now_timestamp = date_now_obj.getTime();
+        date_now_timestamp = parseInt(date_now_timestamp) / 1000;
+        date_now_timestamp = parseInt(date_now_timestamp);
+
         let bodyData = {
-            "user_id":userId,
-            "improvement_id": improvement_item.id
+            "improvement_id": improvement_item.id,
+            "timestamp":date_now_timestamp
         };
 
-        fetch(`${process.env.REACT_APP_API_URL}/v2/clicker/improvements/set`, {
+        fetch(`${process.env.REACT_APP_API_URL}/v3/improvements/set`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'auth-api-token': token
             },
             body: JSON.stringify(bodyData)
         }).then(response => response.json())
             .then(response => {
                 if(response.message === 'ok'){
-                    console.log(improvements);
-                    console.log(response.improvements_data);
-
-                    console.log(playerImprovements);
                     improvements.forEach((item, i) => {
                         if (item['id'] === improvement_item.id) {
                             let playerNewImprovements = playerImprovements;
@@ -131,11 +131,6 @@ function Improvements() {
                             } else {
                                 playerNewImprovements['data'][item.id] = { "level": 2 };
                             }
-
-                            // updateGame({
-                            //     score: parseFloat(score) - parseFloat(improvement_item.price),
-                            // });
-
 
                             console.log(playerNewImprovements);
                             if(skinId !== null){
@@ -183,19 +178,6 @@ function Improvements() {
             return;
         }
     }, [coinsPerSecond]);
-
-
-    useEffect(() => {
-        if (socket && !isNaN(score) && score !== null && totalEarn !== null && !isNaN(totalEarn)) {
-            const socket_data = JSON.stringify({
-                "Score": parseFloat(score),
-                "TelegramId": parseInt(userId),
-                "Energy": parseInt(energy),
-                "TotalEarn": parseFloat(totalEarn)
-            });
-            socket.send(socket_data);
-        }
-    }, [score, socket, userId, energy, totalEarn]);
 
     function translatedName(item){
         if(i18n.language === 'ru'){

@@ -52,7 +52,7 @@ function Index() {
     const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, token, userId, level, coinId, coinImageId, skinImageId, coinShadowColor } = useContext(GameContext);
     const [isClicked, setIsClicked] = useState(false);
     const [clicks, setClicks] = useState([]);
-    const [clicksCount, setClicksCount] = useState(0);
+    const [clicksCount, setClicksCount] = useState(1);
 
     const [vibrateCheckText, setVibrateCheckText] = useState("Кликни для проверки");
 
@@ -129,15 +129,15 @@ function Index() {
             clearTimeout(timer.current);
         }
 
-        console.log("clicks count is " + clicksCount)
-        setClicksCount(clicksCount + 1);
-        console.log("clicks count is " + clicksCount)
-
         // Устанавливаем новый таймер
         timer.current = setTimeout(() => {
             sendRequest(clicksCount);
-            setClicksCount(0);
+            setClicksCount(1);
         }, 2000); // Задержка в 3 секунды
+
+        setClicksCount(clicksCount + 1);
+
+        console.log("clicks count is " + clicksCount)
 
         if(WebApp){
             WebApp.HapticFeedback.impactOccurred('medium');
@@ -170,8 +170,14 @@ function Index() {
     };
 
     function sendRequest(clicks_count){
+        let date_now_obj = new Date();
+        let date_now_timestamp = date_now_obj.getTime();
+        date_now_timestamp = parseInt(date_now_timestamp) / 1000;
+        date_now_timestamp = parseInt(date_now_timestamp) - 2;
+
         let data = {
             "clicks_count":clicks_count,
+            "timestamp":date_now_timestamp
         };
 
         fetch(`${process.env.REACT_APP_API_URL}/v2/tap`, {
@@ -183,8 +189,15 @@ function Index() {
             body: JSON.stringify(data)
         }).then(response => response.json())
             .then(response => {
+                date_now_obj = new Date();
+                date_now_timestamp = parseInt(parseInt(date_now_obj.getTime()) / 1000);
+                let diff_timestamps = date_now_timestamp - response.timestamp_now;
+                console.log("Разница в секундах " + diff_timestamps);
+                console.log("Разница в секундах сервер " + response.timestamp_diff);
+
                 updateGame({
-                    energy: parseInt(response.current_energy)
+                    energy: parseInt(response.current_energy),
+                    score: parseFloat(response.balance)
                 })
                 console.log(response);
             });
