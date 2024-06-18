@@ -91,7 +91,7 @@ const Layout = () => {
             user_language = "ru";
         }
 
-        fetch(`${process.env.REACT_APP_API_URL}/v2/clicker/user/get/${userId}/${user_language}`)
+        fetch(`${process.env.REACT_APP_API_URL}/v2/auth/user/get/${userId}/${user_language}`)
             .then(response => response.json())
             .then(response => {
                 setFirstName(response.user.first_name);
@@ -165,7 +165,8 @@ const Layout = () => {
                     skinPerTapBoost:response.user.per_tap_boost,
                     energyBarBoost:response.user.energy_bar_boost,
                     level:levelValue,
-                    family_id:response.user.family_id ? parseInt(response.user.family_id) : null
+                    family_id:response.user.family_id ? parseInt(response.user.family_id) : null,
+                    token: response.token
                 });
 
                 console.log(playerImprovements)
@@ -201,7 +202,7 @@ const Layout = () => {
             const socket_data = JSON.stringify({
                 "Score": parseFloat(score),
                 "TelegramId": parseInt(userId),
-                "Energy": parseInt(energy),
+                // "Energy": parseInt(energy),
                 "TotalEarn": parseFloat(totalEarn)
             });
 

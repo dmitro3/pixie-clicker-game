@@ -1,5 +1,5 @@
 import '../App.css';
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {NavLink, useParams} from "react-router-dom";
 import energyIcon from "../Resources/images/energy_icon.svg"
 import rocketIcon from "../Resources/images/rocket.svg"
@@ -49,9 +49,10 @@ import coinImage from "../Resources/images/coin.svg";
 import default_skin from "../Resources/images/human-free.png";
 
 function Index() {
-    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, userId, level, coinId, coinImageId, skinImageId, coinShadowColor } = useContext(GameContext);
+    const { score, coinsPerClick, energy, totalEarn, maxEnergy, updateGame, token, userId, level, coinId, coinImageId, skinImageId, coinShadowColor } = useContext(GameContext);
     const [isClicked, setIsClicked] = useState(false);
     const [clicks, setClicks] = useState([]);
+    const [clicksCount, setClicksCount] = useState(0);
 
     const [vibrateCheckText, setVibrateCheckText] = useState("Кликни для проверки");
 
@@ -112,6 +113,8 @@ function Index() {
 
     const { t, i18n } = useTranslation();
 
+    const timer = useRef(null);
+
     const handleClick = (event) => {
         let coinsPerClickNow = coinsPerClick;
         let isMinusEnergy = true;
@@ -121,6 +124,20 @@ function Index() {
             // coinsPerClickNow = 1;
             // isMinusEnergy = false;
         }
+
+        if (timer.current) {
+            clearTimeout(timer.current);
+        }
+
+        console.log("clicks count is " + clicksCount)
+        setClicksCount(clicksCount + 1);
+        console.log("clicks count is " + clicksCount)
+
+        // Устанавливаем новый таймер
+        timer.current = setTimeout(() => {
+            sendRequest(clicksCount);
+            setClicksCount(0);
+        }, 2000); // Задержка в 3 секунды
 
         if(WebApp){
             WebApp.HapticFeedback.impactOccurred('medium');
@@ -151,6 +168,27 @@ function Index() {
 
         setTimeout(() => setIsClicked(false), 100); // Убрать эффект через 100 мс
     };
+
+    function sendRequest(clicks_count){
+        let data = {
+            "clicks_count":clicks_count,
+        };
+
+        fetch(`${process.env.REACT_APP_API_URL}/v2/tap`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'auth-api-token': token
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json())
+            .then(response => {
+                updateGame({
+                    energy: parseInt(response.current_energy)
+                })
+                console.log(response);
+            });
+    }
 
     const coins_images = [
         "",

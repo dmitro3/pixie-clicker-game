@@ -109,10 +109,6 @@ function Improvements() {
             "improvement_id": improvement_item.id
         };
 
-        updateGame({
-            score: parseFloat(score) - parseFloat(improvement_item.price),
-        });
-
         fetch(`${process.env.REACT_APP_API_URL}/v2/clicker/improvements/set`, {
             method: 'POST',
             headers: {
@@ -136,17 +132,24 @@ function Improvements() {
                                 playerNewImprovements['data'][item.id] = { "level": 2 };
                             }
 
+                            // updateGame({
+                            //     score: parseFloat(score) - parseFloat(improvement_item.price),
+                            // });
+
 
                             console.log(playerNewImprovements);
                             if(skinId !== null){
                                 updateGame({
                                     coinsPerSecond: parseFloat(response.coins_per_second) + (parseFloat(response.coins_per_second) / 100 * skinEarningBoost),
-                                    playerImprovements: playerNewImprovements
+                                    playerImprovements: playerNewImprovements,
+                                    score: parseFloat(response.balance)
                                 });
+
                             }else{
                                 updateGame({
                                     coinsPerSecond: parseFloat(response.coins_per_second),
-                                    playerImprovements: playerNewImprovements
+                                    playerImprovements: playerNewImprovements,
+                                    score: parseFloat(response.balance)
                                 });
                             }
 
@@ -163,9 +166,9 @@ function Improvements() {
                 }else{
                     setIsLoaded(true);
                     toast.error("Error :c");
-                    updateGame({
-                        score: parseFloat(score) + parseFloat(improvement_item.price),
-                    });
+                    // updateGame({
+                    //     score: parseFloat(score) + parseFloat(improvement_item.price),
+                    // });
                 }
 
             });

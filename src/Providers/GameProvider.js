@@ -33,6 +33,7 @@ const GameProvider = ({ children }) => {
         skinPerTapBoost:0,
         energyBarBoost:0,
         family_id:null,
+        token:null
     });
 
     // useEffect(() => {
