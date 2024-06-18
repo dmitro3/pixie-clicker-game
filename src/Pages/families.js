@@ -454,7 +454,7 @@ function Families() {
                 {families.map((family, i) => (
                     <div className={"families_list-item " + (family.user_id_in_family === userId ? "selected" : "")} onClick={() => {viewFamilyMore(family)}}>
                         {family.image !== null && family.image !== '' ?
-                            <img src={"https://api.pixie-game.com/storage/" + family.image} alt="" className="families_list-item-image"/>
+                            <img src={"https://api-v2.pixie-game.com/storage/" + family.image} alt="" className="families_list-item-image"/>
                         :
                             <img src={coinImage} alt="" className="families_list-item-image"/>
                         }

@@ -57,14 +57,14 @@ function App() {
                 i18n.changeLanguage("uk");
             }
         }else{
-            i18n.changeLanguage("fa");
+            i18n.changeLanguage("ru");
         }
 
         if (platform === 'ios' || platform === 'android') {
             setIsTelegramWebApp(true);
         } else {
-            setIsTelegramWebApp(true);
-            // setIsTelegramWebApp(false);
+            // setIsTelegramWebApp(true);
+            setIsTelegramWebApp(false);
         }
     }, [platform]);
 
