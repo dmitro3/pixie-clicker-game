@@ -133,20 +133,11 @@ function Improvements() {
                             }
 
                             console.log(playerNewImprovements);
-                            if(skinId !== null){
-                                updateGame({
-                                    coinsPerSecond: parseFloat(response.coins_per_second) + (parseFloat(response.coins_per_second) / 100 * skinEarningBoost),
-                                    playerImprovements: playerNewImprovements,
-                                    score: parseFloat(response.balance)
-                                });
-
-                            }else{
-                                updateGame({
-                                    coinsPerSecond: parseFloat(response.coins_per_second),
-                                    playerImprovements: playerNewImprovements,
-                                    score: parseFloat(response.balance)
-                                });
-                            }
+                            updateGame({
+                                coinsPerSecond: parseFloat(response.coins_per_second),
+                                playerImprovements: playerNewImprovements,
+                                score: parseFloat(response.balance)
+                            });
 
 
                             improvements[i]['price'] = improvements[i]['price'] * improvements[i]['price_coef'];

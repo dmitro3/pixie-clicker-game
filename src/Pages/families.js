@@ -241,7 +241,7 @@ function Families() {
 
         setCurrentFamilyUsers(null);
 
-        fetch(`${process.env.REACT_APP_API_URL}/v1/family/leave`, {
+        fetch(`${process.env.REACT_APP_API_URL}/v2/family/leave`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
