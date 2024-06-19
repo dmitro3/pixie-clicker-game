@@ -83,7 +83,7 @@ function Families() {
     const [isCreateLoader, setIsCreateLoader] = useState(false);
     const [errorFileSize, setErrorFileSize] = useState("");
 
-    const { userId, level, family_id, updateGame, score } = useContext(GameContext);
+    const { userId, level, family_id, updateGame, score, token } = useContext(GameContext);
 
     const { t, i18n } = useTranslation();
 
@@ -151,19 +151,21 @@ function Families() {
         formData.append('image', file);
         formData.append('name', name);
         formData.append('description', description);
-        formData.append('user_id', userId);
 
         setIsCreateLoader(true);
 
         try {
-            fetch(`${process.env.REACT_APP_API_URL}/v1/family/create`, {
+            fetch(`${process.env.REACT_APP_API_URL}/v2/family/create`, {
                 method: 'POST',
+                headers: {
+                    'auth-api-token': token
+                },
                 body: formData,
             }).then(response => response.json())
                 .then(response => {
                     if(response.message === 'ok'){
                         updateGame({
-                            score: parseFloat(score) - parseFloat(100000000),
+                            score: parseFloat(response.balance),
                             family_id: parseInt(response.family_id)
                         });
 
@@ -234,8 +236,7 @@ function Families() {
         }
 
         let data = {
-            "family_id":family.id,
-            "user_id":userId
+            "family_id":family.id
         };
 
         setCurrentFamilyUsers(null);
@@ -243,7 +244,8 @@ function Families() {
         fetch(`${process.env.REACT_APP_API_URL}/v1/family/leave`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'auth-api-token': token
             },
             body: JSON.stringify(data)
         }).then(response => response.json())

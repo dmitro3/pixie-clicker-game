@@ -105,17 +105,19 @@ const Layout = () => {
                 let temp_coins_per_second = parseFloat(response.user.coins_per_second);
                 let temp_coins_per_click = parseFloat(response.user.coins_per_click);
 
-                if(response.user.skin_id !== null){
-                    console.log("есть бусты");
-                    maxEnergy = maxEnergy + (maxEnergy / 100 * parseInt(response.user.energy_bar_boost));
-                    temp_coins_per_second = temp_coins_per_second + (temp_coins_per_second / 100 * parseInt(response.user.earning_boost));
-                    temp_coins_per_click = temp_coins_per_click + parseFloat(response.user.per_tap_boost);
-                }
+                // if(response.user.skin_id !== null){
+                //     console.log("есть бусты");
+                //     maxEnergy = maxEnergy + (maxEnergy / 100 * parseInt(response.user.energy_bar_boost));
+                //     temp_coins_per_second = temp_coins_per_second + (temp_coins_per_second / 100 * parseInt(response.user.earning_boost));
+                //     temp_coins_per_click = temp_coins_per_click + parseFloat(response.user.per_tap_boost);
+                // }
 
-
-                setPassiveProfitPopup(true);
 
                 let passiveProfitValue = parseFloat(response.user.balance) - parseFloat(response.user.old_balance);
+                if(parseInt(passiveProfitValue) !== 0){
+                    setPassiveProfitPopup(true);
+                }
+
 
                 setPassiveProfitValue(passiveProfitValue);
                 user_score = parseFloat(response.user.balance);

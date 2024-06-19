@@ -60,7 +60,7 @@ function Referrals() {
     const [sumGetCoins, setSumGetCoins] = useState(0);
     const [earnsFromLevels, setEarnsFromLevels] = useState({0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0});
 
-    const { score, updateGame, totalEarn, userId } = useContext(GameContext);
+    const { score, updateGame, totalEarn, userId, token } = useContext(GameContext);
 
     const { t, i18n } = useTranslation();
 
@@ -154,14 +154,14 @@ function Referrals() {
                 if(response.referrals.length > 500){
                     referrals_coefs = [
                         0,
-                        0.8,
-                        0.7,
-                        0.6,
-                        0.5,
-                        0.4,
-                        0.3,
-                        0.2,
-                        0.1
+                        1.9,
+                        1.8,
+                        1.7,
+                        1.6,
+                        1.5,
+                        1.4,
+                        1.3,
+                        1.2
                     ];
                 }
 
@@ -254,20 +254,24 @@ function Referrals() {
             setSumGetCoins(parseFloat(sumGetCoins) * (-1))
         }
 
-        updateGame({
-            score: parseFloat(score) + parseFloat(sumGetCoins),
-            totalEarn: parseFloat(totalEarn) + parseFloat(sumGetCoins)
-        });
+        let date_now_obj = new Date();
+        let date_now_timestamp = date_now_obj.getTime();
+        date_now_timestamp = parseInt(date_now_timestamp) / 1000;
+        date_now_timestamp = parseInt(date_now_timestamp);
 
-        fetch(`${process.env.REACT_APP_API_URL}/clicker/v2/referrals/get/coins`, {
+        fetch(`${process.env.REACT_APP_API_URL}/v3/referrals/get/coins`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'auth-api-token': token
             },
-            body: JSON.stringify({"user_id":userId})
+            body: JSON.stringify({"timestamp":date_now_timestamp})
         }).then(response => response.json())
             .then(response => {
                 console.log(response);
+                updateGame({
+                    score: parseFloat(response.balance)
+                })
                 fetch(`${process.env.REACT_APP_API_URL}/clicker/referrals/get/${userId}`)
                     .then(response => response.json())
                     .then(response => {
@@ -278,14 +282,14 @@ function Referrals() {
                         if(response.referrals.length > 500){
                             referrals_coefs = [
                                 0,
-                                0.8,
-                                0.7,
-                                0.6,
-                                0.5,
-                                0.4,
-                                0.3,
-                                0.2,
-                                0.1
+                                1.9,
+                                1.8,
+                                1.7,
+                                1.6,
+                                1.5,
+                                1.4,
+                                1.3,
+                                1.2
                             ];
                         }
 

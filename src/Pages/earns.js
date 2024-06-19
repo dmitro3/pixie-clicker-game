@@ -18,7 +18,7 @@ import cryptowolf_icon from "../Resources/images/tasks/cryptowolf.jpg";
 
 
 function Earns() {
-    const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId } = useContext(GameContext);
+    const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId, token } = useContext(GameContext);
     const [clickBoostPrice, setClickBoostPrice] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -79,22 +79,22 @@ function Earns() {
     }
     function checkRules(task){
         let data = {
-            "user_id":userId,
             "task_id":task.id
         };
 
-        fetch(`${process.env.REACT_APP_API_URL}/clicker/tasks/check/complete/`, {
+        fetch(`${process.env.REACT_APP_API_URL}/v2/tasks/check/complete`, {
         // fetch('http://game.pixie.loc/api/clicker/tasks/check/complete', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'auth-api-token': token
             },
             body: JSON.stringify(data)
         }).then(response => response.json())
             .then(response => {
                if(response.message === 'ok'){
                    updateGame({
-                       score: parseFloat(score) + parseFloat(task.coins)
+                       score: parseFloat(response.balance)
                    });
 
                    setViewPopup(false);

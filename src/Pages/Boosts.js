@@ -44,6 +44,8 @@ function Boosts() {
         setMultitapPrice(price);
     }, [coinsPerClick]);
     function multitap(){
+        return;
+
         if(score < multitapPrice){
             return;
         }
@@ -78,6 +80,8 @@ function Boosts() {
         setEnergyTotalPrice(price);
     }, [maxEnergy]);
     function energyTotal(){
+        return;
+
         if(score < energyTotalPrice){
             return;
         }
@@ -112,7 +116,7 @@ function Boosts() {
                 <h1 className="boosts_container-name">{t('Boosts')}</h1>
 
                 <div className="boosts_container-column">
-                    <button className={"boosts_container-row-button " + (score < multitapPrice ? 'disabled' : '')} onClick={multitap}>
+                    <button className={"boosts_container-row-button disabled" + (score < multitapPrice ? 'disabled' : '')} onClick={multitap}>
                         <img src={rocketImage} alt="" className="boosts_container-row-button-icon" />
                         <div className="boosts_container-row-button-text">
                             <span className="boosts_container-row-button-text-name">Multitap</span>
@@ -127,7 +131,7 @@ function Boosts() {
                             </div>
                         </div>
                     </button>
-                    <button className={"boosts_container-row-button " + (score < energyTotalPrice ? 'disabled' : '')} onClick={energyTotal}>
+                    <button className={"boosts_container-row-button disabled" + (score < energyTotalPrice ? 'disabled' : '')} onClick={energyTotal}>
                         <img src={energyIcon} alt="" className="boosts_container-row-button-icon" />
                         <div className="boosts_container-row-button-text">
                             <span className="boosts_container-row-button-text-name">Energy limit</span>
