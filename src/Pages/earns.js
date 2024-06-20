@@ -15,6 +15,7 @@ import present_image from "../Resources/images/present.svg";
 import gorgon_icon from "../Resources/images/gorgon.jpg";
 import hexn_icon from "../Resources/images/tasks/hexn.png";
 import cryptowolf_icon from "../Resources/images/tasks/cryptowolf.jpg";
+import tonchurch_icon from "../Resources/images/tasks/tonchurch.svg";
 
 
 function Earns() {
@@ -136,6 +137,8 @@ function Earns() {
             return <img src={coinImage} alt="" className="tasks_container-item-image"/>
         }else if(id === 16){
             return <img src={cryptowolf_icon} alt="" className="tasks_container-item-image"/>
+        }else if(id === 19){
+            return <img src={tonchurch_icon} alt="" className="tasks_container-item-image"/>
         }else{
             return <img src={telegramIcon} alt="" className="tasks_container-item-image"/>
         }
