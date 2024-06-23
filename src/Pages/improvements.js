@@ -100,7 +100,7 @@ function Improvements() {
     }, []);
 
     function buyImprovement(improvement_item) {
-        setIsLoaded(false);
+        // setIsLoaded(false);
 
         let date_now_obj = new Date();
         let date_now_timestamp = date_now_obj.getTime();
@@ -132,43 +132,27 @@ function Improvements() {
                                 playerNewImprovements['data'][item.id] = { "level": 2 };
                             }
 
-                            console.log(playerNewImprovements);
                             updateGame({
                                 coinsPerSecond: parseFloat(response.coins_per_second),
                                 playerImprovements: playerNewImprovements,
                                 score: parseFloat(response.balance)
                             });
 
-
                             improvements[i]['price'] = improvements[i]['price'] * improvements[i]['price_coef'];
                             improvements[i]['give_coins'] = improvements[i]['give_coins'] * improvements[i]['give_coins_coef'];
                             improvements[i]['coins_mining_now'] = (improvements[i]['coins_mining_now'] || 0) + improvements[i]['give_coins'];
                         }
                     });
-                    setIsLoaded(true);
+                    // setIsLoaded(true);
                     toast.success("Success!");
 
                     console.log(playerImprovements);
                 }else{
-                    setIsLoaded(true);
+                    // setIsLoaded(true);
                     toast.error("Error :c");
-                    // updateGame({
-                    //     score: parseFloat(score) + parseFloat(improvement_item.price),
-                    // });
                 }
-
             });
-
-
-        //
-        // console.warn(playerImprovements);
     }
-
-    useEffect(() => {
-        if(coinsPerSecond === 0){
-            return;
-        }
-    }, [coinsPerSecond]);
 
     function translatedName(item){
         if(i18n.language === 'ru'){

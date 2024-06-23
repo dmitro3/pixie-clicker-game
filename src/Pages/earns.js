@@ -16,7 +16,9 @@ import gorgon_icon from "../Resources/images/gorgon.jpg";
 import hexn_icon from "../Resources/images/tasks/hexn.png";
 import cryptowolf_icon from "../Resources/images/tasks/cryptowolf.jpg";
 import tonchurch_icon from "../Resources/images/tasks/tonchurch.svg";
-
+import doomsday_icon from "../Resources/images/tasks/doomsday_icon.png";
+import drophunter_icon from "../Resources/images/tasks/drophunter.jpg";
+import topcoin_icon from "../Resources/images/tasks/topcoin.png";
 
 function Earns() {
     const { score, coinsPerClick, energy, totalEarn, coinsPerSecond, playerImprovements, updateGame, userId, token } = useContext(GameContext);
@@ -137,8 +139,14 @@ function Earns() {
             return <img src={coinImage} alt="" className="tasks_container-item-image"/>
         }else if(id === 16){
             return <img src={cryptowolf_icon} alt="" className="tasks_container-item-image"/>
+        }else if(id === 17){
+            return <img src={drophunter_icon} alt="" className="tasks_container-item-image"/>
+        }else if(id === 18){
+            return <img src={doomsday_icon} alt="" className="tasks_container-item-image"/>
         }else if(id === 19){
             return <img src={tonchurch_icon} alt="" className="tasks_container-item-image"/>
+        }else if(id === 20){
+            return <img src={topcoin_icon} alt="" className="tasks_container-item-image"/>
         }else{
             return <img src={telegramIcon} alt="" className="tasks_container-item-image"/>
         }

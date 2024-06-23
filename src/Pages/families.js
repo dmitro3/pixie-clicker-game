@@ -39,6 +39,8 @@ import skin_25 from "../Resources/images/skins/25.png";
 import skin_26 from "../Resources/images/skins/26.png";
 import skin_27 from "../Resources/images/skins/27.png";
 
+import pencilIcon from "../Resources/images/pencil.svg";
+
 function Families() {
     const skins_images = [
         skin_0,
@@ -73,15 +75,18 @@ function Families() {
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [families, setFamilies] = useState([]);
+    const [familiesObject, setFamiliesObject] = useState([]);
     const [currentFamily, setCurrentFamily] = useState(null);
     const [currentFamilyUsers, setCurrentFamilyUsers] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
+    const [showPopupEdit, setShowPopupEdit] = useState(false);
     const [showPopupCreate, setShowPopupCreate] = useState(false);
     const [file, setFile] = useState(null);
     const [name, setName] = useState(null);
     const [description, setDescription] = useState(null);
     const [isCreateLoader, setIsCreateLoader] = useState(false);
     const [errorFileSize, setErrorFileSize] = useState("");
+    const [nameSearchFamilies, setNameSearchFamilies] = useState("");
 
     const { userId, level, family_id, updateGame, score, token } = useContext(GameContext);
 
@@ -92,6 +97,7 @@ function Families() {
             .then(response => response.json())
             .then(response => {
                 setFamilies(response.families);
+                setFamiliesObject(response.families);
                 setIsLoaded(true);
             });
     }, []);
@@ -120,8 +126,20 @@ function Families() {
         setCurrentFamily(null);
         setShowPopup(false);
     }
+    function editPopup(){
+        setCurrentFamilyUsers(null);
+        setShowPopup(false);
+
+        if(currentFamily.creator_id === userId){
+            setShowPopupEdit(true);
+        }
+
+    }
     function closePopupCreate(){
         setShowPopupCreate(false);
+    }
+    function closePopupEdit(){
+        setShowPopupEdit(false);
     }
 
     const handleFileChange = (event) => {
@@ -133,7 +151,7 @@ function Families() {
             return false;
         }
 
-        if(score < 100000000){
+        if(score < 250000000){
             return false;
         }
 
@@ -176,6 +194,70 @@ function Families() {
                             .then(response => response.json())
                             .then(response => {
                                 setFamilies(response.families);
+                                setFamiliesObject(response.families);
+                                setCurrentFamily(response.families);
+                                setIsLoaded(true);
+                            });
+                    }
+                });
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Upload failed');
+        }
+    };
+    const handleSubmitEdit = async (event) => {
+        if(currentFamily.creator_id !== userId){
+            return false;
+        }
+
+        if(!description || !name){
+            return false;
+        }
+
+        if(score < 125000000){
+            return false;
+        }
+
+        // Проверка, если файл существует и его размер превышает 2MB
+        if (file && file.size > (2097152 / 2)) {
+            setErrorFileSize("File size should not exceed 1MB")
+
+            setTimeout(function(){
+                setErrorFileSize("");
+            }, 3000);
+            return false;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('name', currentFamily.name);
+        formData.append('description', currentFamily.description);
+
+        setIsCreateLoader(true);
+
+        try {
+            fetch(`${process.env.REACT_APP_API_URL}/v2/family/edit`, {
+                method: 'POST',
+                headers: {
+                    'auth-api-token': token
+                },
+                body: formData,
+            }).then(response => response.json())
+                .then(response => {
+                    if(response.message === 'ok'){
+                        updateGame({
+                            score: parseFloat(response.balance),
+                            family_id: parseInt(response.family_id)
+                        });
+
+                        setShowPopupCreate(false);
+                        setIsCreateLoader(false);
+
+                        fetch(`${process.env.REACT_APP_API_URL}/v1/family/list/${userId}`)
+                            .then(response => response.json())
+                            .then(response => {
+                                setFamilies(response.families);
+                                setFamiliesObject(response.families);
                                 setCurrentFamily(response.families);
                                 setIsLoaded(true);
                             });
@@ -267,6 +349,7 @@ function Families() {
                         .then(response => response.json())
                         .then(response => {
                             setFamilies(response.families);
+                            setFamiliesObject(response.families);
                             setIsLoaded(true);
                         });
                 }else{
@@ -312,12 +395,22 @@ function Families() {
                         .then(response => response.json())
                         .then(response => {
                             setFamilies(response.families);
+                            setFamiliesObject(response.families);
                             setIsLoaded(true);
                         });
                 }else{
                     console.log("error");
                 }
             });
+    }
+
+    function searchFamiliesSubmit(e){
+        e.preventDefault();
+
+        setFamilies(familiesObject.filter(item => item.name.toLowerCase().includes(nameSearchFamilies)));
+    }
+    function searchFamilies(e){
+        setFamilies(familiesObject.filter(item => item.name.toLowerCase().includes(nameSearchFamilies)));
     }
 
     if(!isLoaded) return <Loader />;
@@ -358,12 +451,65 @@ function Families() {
 
                                     <div className="create-family-price">
                                         <img src={coinImage} alt=""/>
-                                        100,000,000
+                                        250,000,000
                                     </div>
 
                                     <p className="error-file-size">{errorFileSize}</p>
 
-                                    <button className={"family-popup-content-create " + ((score < 100000000 ? 'disabled' : ''))} onClick={handleSubmit}>Create</button>
+                                    <button className={"family-popup-content-create " + ((score < 250000000 ? 'disabled' : ''))} onClick={handleSubmit}>Create</button>
+                                </>
+                            }
+                        </>
+                    </div>
+                    <div className="family-popup-overlay" onClick={()=>{closePopupCreate()}}></div>
+                </div>
+            :
+                ''
+            }
+
+
+            {showPopupEdit ?
+                <div className="family-popup">
+                    <div className="family-popup-content">
+                        <>
+                            {isCreateLoader ?
+                                <Loader />
+                            :
+                                <>
+                                    <button className="family-popup-content-users-item-button-close" onClick={()=>{closePopupEdit()}}>✕</button>
+
+                                    <h3 className="family-popup-content-name">Edit family</h3>
+
+                                    <div className="family-popup-content-form-group">
+                                        <label htmlFor="name">Name</label>
+                                        <input type="text" id="name" value={currentFamily.name} onChange={handleNameChange} />
+                                    </div>
+
+                                    <div className="family-popup-content-form-group">
+                                        <label htmlFor="description">Description</label>
+                                        <input type="text" id="description" value={currentFamily.description} onChange={handleDescriptionChange} />
+                                    </div>
+
+
+                                    <div className="family-popup-content-form-group edit-family">
+                                        <label htmlFor="file">
+                                            {currentFamily.image !== null && currentFamily.image !== '' ?
+                                                <img src={"https://api-v2.pixie-game.com/storage/" + currentFamily.image} alt="" className="families_list-item-image"/>
+                                            :
+                                                <img src={coinImage} alt="" className="families_list-item-image"/>
+                                            }
+                                        </label>
+                                        <input type="file" id="file" onChange={handleFileChange} />
+                                    </div>
+
+                                    <div className="create-family-price">
+                                        <img src={coinImage} alt=""/>
+                                        125,000,000
+                                    </div>
+
+                                    <p className="error-file-size">{errorFileSize}</p>
+
+                                    <button className={"family-popup-content-create " + ((score < 125000000 ? 'disabled' : ''))} onClick={handleSubmitEdit}>Edit</button>
                                 </>
                             }
                         </>
@@ -380,6 +526,13 @@ function Families() {
                         {currentFamilyUsers !== null ?
                             <>
                                 <button className="family-popup-content-users-item-button-close" onClick={()=>{closePopup()}}>✕</button>
+                                {currentFamily.id === family_id && currentFamily.creator_id === userId ?
+                                    <button className="family-popup-content-users-item-button-edit" onClick={()=>{editPopup()}}>
+                                        <img src={pencilIcon} alt=""/>
+                                    </button>
+                                :
+                                    ''
+                                }
 
                                 <div className="family-popup-content-header">
                                     <h1 className="family-popup-content-name">
@@ -451,6 +604,11 @@ function Families() {
             }
 
             {/*<button className="family-create" onClick={()=>{showPopupCreateFamily()}}>+</button>*/}
+
+            <form className="families_list-search-form" onSubmit={searchFamiliesSubmit}>
+                <input type="text" placeholder="Name or code" value={nameSearchFamilies} onChange={(e)=>{setNameSearchFamilies(e.target.value);}} />
+                <button onClick={()=>{searchFamilies()}}>search</button>
+            </form>
 
             <div className="families_list">
                 {families.map((family, i) => (

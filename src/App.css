@@ -1360,6 +1360,24 @@ body{
   padding: 0;
   line-height: 14px;
 }
+.family-popup-content-users-item-button-edit{
+  position: fixed;
+  right: 45px;
+  margin-top: -20px;
+
+  outline: none;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+
+  background: unset;
+  color: #fff;
+  font-size: 14px;
+  background: #333;
+  padding: 0;
+  line-height: 14px;
+}
 .family-popup-content-users-list{
   margin-top: 20px;
   display: flex;
@@ -1555,6 +1573,72 @@ body{
   font-size: 14px;
   font-weight: bold;
 }
+.families_list-search-form{
+  box-sizing: border-box;
+  padding: 0 20px;
+  display: flex;
+  margin-bottom: 10px;
+}
+.families_list-search-form > input{
+  outline: none;
+  border: none;
+
+  background: rgba(170, 167, 178, 0.09);
+  border-radius: 2px;
+  padding: 10px 13px;
+
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+  letter-spacing: -0.03em;
+  color: #fff;
+
+  width: 100%;
+}
+.families_list-search-form > button{
+  outline: none;
+  border: none;
+
+  background: #bbf245;
+  border-radius: 2px;
+  box-sizing: border-box;
+
+  padding: 5px 20px;
+
+  font-family: "Pixel";
+}
+.family-popup-content-form-group.edit-family{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.family-popup-content-form-group.edit-family > label{
+  display: block;
+  min-width: 50px;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+.family-popup-content-form-group.edit-family > label > img{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.family-popup-content-form-group.edit-family > input{
+  display: block;
+  margin-top: 0;
+  width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 @keyframes pulse1 {

@@ -151,17 +151,41 @@ function Referrals() {
                 let new_referrals = [];
                 let total_recieved_can_now = 0;
 
-                if(response.referrals.length > 500){
+                if(response.referrals.length > 500 && response.referrals.length < 1000){
                     referrals_coefs = [
                         0,
-                        1.9,
-                        1.8,
-                        1.7,
-                        1.6,
+                        20,
+                        15,
+                        10,
+                        5,
+                        4.5,
+                        4,
+                        3.5,
+                        2
+                    ];
+                }else if(response.referrals.length >= 1000 && response.referrals.length < 1999){
+                    referrals_coefs = [
+                        0,
+                        15,
+                        10,
+                        7.5,
+                        5,
+                        2.5,
+                        2,
                         1.5,
-                        1.4,
-                        1.3,
-                        1.2
+                        1
+                    ];
+                }else if(response.referrals.length >= 2000){
+                    referrals_coefs = [
+                        0,
+                        5,
+                        4,
+                        3,
+                        2.5,
+                        2,
+                        1.7,
+                        1.5,
+                        1
                     ];
                 }
 
