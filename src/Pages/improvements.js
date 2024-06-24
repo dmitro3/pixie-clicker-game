@@ -44,6 +44,8 @@ function Improvements() {
     const [improvements, setImprovements] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
+    const [disabledItems, setDisabledItems] = useState([]);
+
     const improvements_icons = [
         "",
         improvement_icon_1,
@@ -100,7 +102,10 @@ function Improvements() {
     }, []);
 
     function buyImprovement(improvement_item) {
-        // setIsLoaded(false);
+        setDisabledItems(prev => [...prev, improvement_item.id]);
+        setTimeout(() => {
+            setDisabledItems(prev => prev.filter(id => id !== improvement_item.id));
+        }, 2000);
 
         let date_now_obj = new Date();
         let date_now_timestamp = date_now_obj.getTime();
@@ -179,7 +184,7 @@ function Improvements() {
 
                 <div className="improve_container-row">
                     {improvements.map(item => (
-                        <div key={item.id} className={"improve_container-row-item " + (parseInt(item.price) > parseInt(score) ? "disabled" : "")} onClick={() => { if (parseInt(item.price) < parseInt(score)) { buyImprovement(item) } }}>
+                        <div key={item.id} className={"improve_container-row-item " + ((parseInt(item.price) > parseInt(score) || disabledItems.includes(item.id)) ? "disabled" : "")} onClick={() => { if (parseInt(item.price) < parseInt(score) && !disabledItems.includes(item.id)) { buyImprovement(item) } }}>
                             <div className="improve_container-row-item-main">
                                 <div className="improve_container-row-item-main-leftSide">
                                     {/*<img src={rocketImage} alt="" />*/}

@@ -526,13 +526,13 @@ function Families() {
                         {currentFamilyUsers !== null ?
                             <>
                                 <button className="family-popup-content-users-item-button-close" onClick={()=>{closePopup()}}>✕</button>
-                                {currentFamily.id === family_id && currentFamily.creator_id === userId ?
-                                    <button className="family-popup-content-users-item-button-edit" onClick={()=>{editPopup()}}>
-                                        <img src={pencilIcon} alt=""/>
-                                    </button>
-                                :
-                                    ''
-                                }
+                                {/*{currentFamily.id === family_id && currentFamily.creator_id === userId ?*/}
+                                {/*    <button className="family-popup-content-users-item-button-edit" onClick={()=>{editPopup()}}>*/}
+                                {/*        <img src={pencilIcon} alt=""/>*/}
+                                {/*    </button>*/}
+                                {/*:*/}
+                                {/*    ''*/}
+                                {/*}*/}
 
                                 <div className="family-popup-content-header">
                                     <h1 className="family-popup-content-name">
